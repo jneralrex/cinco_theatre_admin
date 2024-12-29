@@ -1,13 +1,42 @@
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Navigate,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import SignIn from "./auth/SignIn";
+import SignUp from "./auth/SignUp";
+import Nav from "./components/Nav";
+import DashBoard from "./pages/DashBoard";
+import EventManagement from "./pages/EventManagement";
+import UserManagement from "./pages/UserManagement";
+import MovieManagement from "./pages/MovieManagement";
+import TheatreAdminManagement from "./pages/TheatreAdminManagement";
+import TheatreManagement from "./pages/TheatreManagement";
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="sign-up" element={<SignUp />} />
+      <Route path="sign-in" element={<SignIn />} />
 
-function App() {
-  
+      <Route element={<Nav />}>
+        <Route path="dashboard" element={<DashBoard />} />
+        <Route path="user-management" element={<UserManagement />} />
+        <Route path="event-management" element={<EventManagement />} />
+        <Route path="movie-management" element={<MovieManagement />} />
+        <Route path="theatre-admin" element={<TheatreAdminManagement />} />
+        <Route path="theatre-management" element={<TheatreManagement/>} />
+      </Route>
 
-  return (
-    <>
-     <div>App</div>
-    </>
+      <Route path="*" element={<Navigate to="/sign-in" />} />
+    </Route>
   )
-}
+);
 
-export default App
+const App = () => {
+  return <RouterProvider router={router} />;
+};
+
+export default App;
