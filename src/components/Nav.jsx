@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { MdOutlineManageAccounts } from "react-icons/md";
+import { MdHome, MdOutlineManageAccounts } from "react-icons/md";
 import { MdEvent } from "react-icons/md";
 import { BiCameraMovie } from "react-icons/bi";
 import { FiMenu, FiX } from "react-icons/fi";
@@ -20,6 +20,11 @@ const Nav = () => {
   };
 
   const navItems = [
+    {
+        icon: <MdHome />,
+        label: "Overview",
+        path: "/dashboard",
+      },
     {
       icon: <MdOutlineManageAccounts />,
       label: "User Mgt",
@@ -51,18 +56,21 @@ const Nav = () => {
     <div>
       <div className="flex flex-col lg:flex-row justify-between max-h-screen">
         {/* Hamburger Button */}
-        <div className="bg-purple-700 text-white p-4 flex lg:hidden">
+        <div className="bg-purple-500 text-white  p-4 flex lg:hidden">
           <button onClick={toggleMenu} className="text-2xl">
             {isOpen ? <FiX /> : <FiMenu />}
           </button>
         </div>
 
         {/* Sidebar Navigation */}
+        <div>
+            
+        </div>
         <div
-          className={`bg-purple-700 w-[300px] min-h-screen absolute lg:static transform ${
-            isOpen ? "translate-x-0" : "-translate-x-full"
-          } lg:translate-x-0 transition-transform duration-300`}
-        >
+        className={`w-[250px] min-h-screen flex-col bg-purple-700 text-white transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 lg:fixed lg:flex transition-transform duration-300 ease-in-out z-50`}
+      >
           {navItems.map((item, index) => (
             <Link
               key={index}
@@ -78,7 +86,7 @@ const Nav = () => {
         </div>
 
         {/* Main Content */}
-        <div className="w-full">
+        <div className="w-full absolute mt-14 lg:w-[76%] xl:w-[80%] lg:relative lg:mt-0 min-h-screen">
           <Outlet />
         </div>
       </div>

@@ -14,6 +14,7 @@ import UserManagement from "./pages/UserManagement";
 import MovieManagement from "./pages/MovieManagement";
 import TheatreAdminManagement from "./pages/TheatreAdminManagement";
 import TheatreManagement from "./pages/TheatreManagement";
+import Global from "./components/globalController/Global";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,7 +28,7 @@ const router = createBrowserRouter(
         <Route path="event-management" element={<EventManagement />} />
         <Route path="movie-management" element={<MovieManagement />} />
         <Route path="theatre-admin" element={<TheatreAdminManagement />} />
-        <Route path="theatre-management" element={<TheatreManagement/>} />
+        <Route path="theatre-management" element={<TheatreManagement />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/sign-in" />} />
@@ -36,7 +37,11 @@ const router = createBrowserRouter(
 );
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <Global>
+      <RouterProvider router={router} />;
+    </Global>
+  );
 };
 
 export default App;
