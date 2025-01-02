@@ -19,22 +19,23 @@ import Global from "./components/globalController/Global";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path="sign-up" element={<SignUp />} />
-      <Route path="sign-in" element={<SignIn />} />
+      <Route path="/sign-up" element={<SignUp />} />
+      <Route path="/sign-in" element={<SignIn />} />
 
-      <Route path="/home" element={<Nav />}>
-        <Route path="dashboard" element={<DashBoard />} />
-        <Route path="user-management" element={<UserManagement />} />
-        <Route path="event-management" element={<EventManagement />} />
-        <Route path="movie-management" element={<MovieManagement />} />
-        <Route path="theatre-admin" element={<TheatreAdminManagement />} />
-        <Route path="theatre-management" element={<TheatreManagement />} />
+      <Route element={<Nav />}>
+        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/user-management" element={<UserManagement />} />
+        <Route path="/event-management" element={<EventManagement />} />
+        <Route path="/movie-management" element={<MovieManagement />} />
+        <Route path="/theatre-admin" element={<TheatreAdminManagement />} />
+        <Route path="/theatre-management" element={<TheatreManagement />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/sign-in" />} />
     </Route>
   )
 );
+
 
 const App = () => {
   return (

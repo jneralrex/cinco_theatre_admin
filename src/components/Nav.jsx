@@ -20,36 +20,12 @@ const Nav = () => {
   };
 
   const navItems = [
-    {
-        icon: <MdHome />,
-        label: "Overview",
-        path: "/home/dashboard",
-      },
-    {
-      icon: <MdOutlineManageAccounts />,
-      label: "User Mgt",
-      path: "/home/user-management",
-    },
-    {
-      icon: <MdEvent />,
-      label: "Event Mgt",
-      path: "/home/event-management",
-    },
-    {
-      icon: <BiCameraMovie />,
-      label: "Movie Mgt",
-      path: "/home/movie-management",
-    },
-    {
-        icon: [<FaMasksTheater/>,<GrUserAdmin/>],
-        label: "Theatre Admin Mgt",
-        path: "/home/theatre-admin",
-      },
-      {
-        icon: [<FaMasksTheater/>,<CiSettings/>],
-        label: "Theatre Mgt",
-        path: "/home/theatre-management",
-      },
+    { icon: <MdHome />, label: "Overview", path: "/dashboard" },
+    { icon: <MdOutlineManageAccounts />, label: "User Mgt", path: "/user-management" },
+    { icon: <MdEvent />, label: "Event Mgt", path: "/event-management" },
+    { icon: <BiCameraMovie />, label: "Movie Mgt", path: "/movie-management" },
+    { icon: [<FaMasksTheater/>,<GrUserAdmin/>], label: "Theatre Admin Mgt", path: "/theatre-admin" },
+    { icon: [<FaMasksTheater/>,<CiSettings/>], label: "Theatre Mgt", path: "/theatre-management" },
   ];
 
   return (
