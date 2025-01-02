@@ -5,7 +5,7 @@ const SignIn = () => {
     const navigate = useNavigate();
 
     const register = () =>{
-        navigate('/dashboard')
+        navigate('/home/dashboard')
     };
   return (
     <div>

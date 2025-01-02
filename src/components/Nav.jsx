@@ -23,32 +23,32 @@ const Nav = () => {
     {
         icon: <MdHome />,
         label: "Overview",
-        path: "/dashboard",
+        path: "/home/dashboard",
       },
     {
       icon: <MdOutlineManageAccounts />,
       label: "User Mgt",
-      path: "/user-management",
+      path: "/home/user-management",
     },
     {
       icon: <MdEvent />,
       label: "Event Mgt",
-      path: "/event-management",
+      path: "/home/event-management",
     },
     {
       icon: <BiCameraMovie />,
       label: "Movie Mgt",
-      path: "/movie-management",
+      path: "/home/movie-management",
     },
     {
         icon: [<FaMasksTheater/>,<GrUserAdmin/>],
         label: "Theatre Admin Mgt",
-        path: "/theatre-admin",
+        path: "/home/theatre-admin",
       },
       {
         icon: [<FaMasksTheater/>,<CiSettings/>],
         label: "Theatre Mgt",
-        path: "/theatre-management",
+        path: "/home/theatre-management",
       },
   ];
 
