@@ -19,7 +19,7 @@ import Global from "./components/globalController/Global";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path="sign-up" element={<SignUp />} />
+      <Route index element={<SignUp />} />
       <Route path="sign-in" element={<SignIn />} />
 
       <Route element={<Nav />}>
@@ -31,7 +31,7 @@ const router = createBrowserRouter(
         <Route path="theatre-management" element={<TheatreManagement />} />
       </Route>
 
-      {/* <Route path="*" element={<Navigate to="/sign-in" />} /> */}
+      <Route path="*" element={<Navigate to="/sign-in" />} />
     </Route>
   )
 );
