@@ -31,7 +31,7 @@ const router = createBrowserRouter(
         <Route path="theatre-management" element={<TheatreManagement />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/sign-in" />} />
+      {/* <Route path="*" element={<Navigate to="/sign-in" />} /> */}
     </Route>
   )
 );
