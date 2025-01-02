@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 import { GlobalController } from '../Global';
-import EventForm from '../forms/EventForm.jsx';
+import TheatreAdminForm from '../forms/TheatreAdminForm.jsx';
 
-const AddEvent = () => {
-    const {addEvent, setAddEvent} = useContext(GlobalController);
+const AddTheatreAdmin = () => {
+    const {addTheatreAdmin, setAddTheatreAdmin} = useContext(GlobalController);
     const toggleLoginModal = () => {
-        setAddEvent(!addEvent);
-        if (!addEvent) {
+        setAddTheatreAdmin(!addTheatreAdmin);
+        if (!addTheatreAdmin) {
           document.body.style.overflow = 'hidden';
         } else {
           document.body.style.overflow = '';
@@ -15,10 +15,10 @@ const AddEvent = () => {
   return (
     <div className='mb-1'>
     <button onClick={toggleLoginModal} className='bg-purple-500 p-2 rounded-lg text-white'>
-      Add Event
+      Add Theatre Admin
     </button>
-    {addEvent && <EventForm closeEventForm={toggleLoginModal} />}
+    {addTheatreAdmin && <TheatreAdminForm closeEventForm={toggleLoginModal} />}
 </div>  )
 } 
 
-export default AddEvent
+export default AddTheatreAdmin
