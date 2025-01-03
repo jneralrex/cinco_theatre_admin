@@ -1,12 +1,8 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
-    const navigate = useNavigate();
 
-    const register = () =>{
-        navigate('/dashboard')
-    };
   return (
     <div>
     <div className="p-3 max-w-lg mx-auto">
@@ -18,7 +14,9 @@ const SignIn = () => {
                 Password
                 <input type="password" name="" id="" className='w-full border rounded-lg p-2' placeholder='password'/>
             </label>
-            <button className='w-full bg-purple-700 rounded-lg p-2 text-white text-lg' onClick={register}>Submit</button>
+           <Link to='/dashboard'>
+           <button className='w-full bg-purple-700 rounded-lg p-2 text-white text-lg'>Submit</button>
+           </Link> 
         </form>
     </div>
 </div>
