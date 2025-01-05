@@ -21,6 +21,7 @@ import News from "./pages/News";
 import Ads from "./pages/Ads";
 import GeneralSettings from "./pages/GeneralSettings";
 import Report from "./pages/Report";
+import ScreenManagement from "./pages/ScreenManagement";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,7 +41,8 @@ const router = createBrowserRouter(
         <Route path="/news" element={<News />} />
         <Route path="/ads" element={<Ads />} />
         <Route path="/report" element={<Report />} />
-        <Route path="/general" element={<GeneralSettings />} />
+        <Route path="/screen-ctrl" element={<ScreenManagement />} />
+        <Route path="/settings" element={<GeneralSettings />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/sign-in" />} />

@@ -1,21 +1,20 @@
 import React, { useState } from "react";
-import { Link, Outlet } from "react-router-dom";
-import { MdHome, MdOutlineManageAccounts } from "react-icons/md";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { MdFitScreen, MdHome, MdOutlineManageAccounts } from "react-icons/md";
 import { MdEvent } from "react-icons/md";
 import { BiCameraMovie } from "react-icons/bi";
 import { FiMenu, FiX } from "react-icons/fi";
 import { FaMasksTheater, FaPen } from "react-icons/fa6";
 import { GrUserAdmin } from "react-icons/gr";
-import { CiSettings } from "react-icons/ci";
+import { CiLogout, CiSettings } from "react-icons/ci";
 import { BsTicket } from "react-icons/bs";
 import { FaLocationArrow } from "react-icons/fa";
 import { FaRegNewspaper } from "react-icons/fa";
 import { PiTelevisionSimpleThin } from "react-icons/pi";
 
-
-
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -25,52 +24,78 @@ const Nav = () => {
     setIsOpen(false);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Example: Clear token
+    navigate("/sign-in"); // Redirect to login
+  };
+
   const navItems = [
     { icon: <MdHome />, label: "Overview", path: "/dashboard" },
     { icon: <MdOutlineManageAccounts />, label: "User Mgt", path: "/user-management" },
     { icon: <MdEvent />, label: "Event Mgt", path: "/event-management" },
     { icon: <BiCameraMovie />, label: "Movie Mgt", path: "/movie-management" },
-    { icon: [<FaMasksTheater/>,<GrUserAdmin/>], label: "Theatre Admin Mgt", path: "/theatre-admin" },
-    { icon: [<FaMasksTheater/>,<CiSettings/>], label: "Theatre Mgt", path: "/theatre-management" },
-    { icon: <BsTicket/>, label: "Tickets", path: "/ticket" },
-    { icon: <FaLocationArrow/>, label: "Location", path: "/locations" },
-    { icon: <FaRegNewspaper/>, label: "News", path: "/news" },
-    { icon: <PiTelevisionSimpleThin/>, label: "Ads", path: "/ads" },
-    { icon: <FaPen/>, label: "Report", path: "/report" },
-   { icon: <CiSettings/>, label: "General Settings", path: "/settings" },
-
+    { icon: <MdFitScreen />, label: "Screen Management", path: "/screen-ctrl" },
+    { icon: [<FaMasksTheater />, <GrUserAdmin />], label: "Theatre Admin Mgt", path: "/theatre-admin" },
+    { icon: [<FaMasksTheater />, <CiSettings />], label: "Theatre Mgt", path: "/theatre-management" },
+    { icon: <BsTicket />, label: "Tickets", path: "/tickets" },
+    { icon: <FaLocationArrow />, label: "Location", path: "/location" },
+    { icon: <FaRegNewspaper />, label: "News", path: "/news" },
+    { icon: <PiTelevisionSimpleThin />, label: "Ads", path: "/ads" },
+    { icon: <FaPen />, label: "Report", path: "/report" },
+    { icon: <CiSettings />, label: "General Settings", path: "/settings" },
   ];
 
   return (
     <div>
-      <div className="flex flex-col lg:flex-row justify-between max-h-screen">
+      <div className="">
+      <div className=" hidden lg:block mt-auto p-4 border-t border-purple-600 bg-black fixed bottom-0 w-[262px] z-50">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-white hover:text-red-200 font-medium w-full"
+            >
+              <CiLogout className="text-xl" /> Logout
+            </button>
+          </div>
+      </div>
+      <div className="flex flex-col lg:flex-row justify-between max-h-screen bg-gray-50">
         {/* Hamburger Button */}
-        <div className="bg-purple-500 text-white fixed w-full p-2 flex lg:hidden z-50">
+        <div className="bg-purple-500 text-white fixed w-full p-2 flex flex-row items-center lg:hidden z-50">
           <button onClick={toggleMenu} className="text-2xl">
             {isOpen ? <FiX /> : <FiMenu />}
           </button>
+          <div className=" lg:hidden mt-auto p-2  border-purple-600 bg-black fixed right-0 z-50">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-white hover:text-red-200 font-medium w-full"
+            >
+              <CiLogout className="text-xl " /> Logout
+            </button>
+          </div>
         </div>
 
         {/* Sidebar Navigation */}
         <div
-        className={`w-[250px] h-[100%] flex-col fixed bg-purple-700 pb-9 mt-10 text-white transform overflow-y-auto ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 lg:fixed lg:mt-0 lg:flex transition-transform lg:pb-2 duration-300 ease-in-out z-10`}
-      >
+          className={`w-[280px] h-full flex-col fixed bg-purple-700 text-white transform overflow-y-auto pb-5 lg:pb-12 ${
+            isOpen ? "translate-x-0" : "-translate-x-full"
+          } lg:translate-x-0 lg:flex transition-transform duration-300 ease-in-out z-10`}
+        >
           {navItems.map((item, index) => (
             <Link
               key={index}
               to={item.path}
-              onClick={closeMenu} 
+              onClick={closeMenu}
             >
-              <div className="flex flex-row gap-2 items-center p-2 lg:p-4 hover:bg-purple-600 ">
-                <div className="flex flex-row gap-2 ">{item.icon}</div>
+              <div className="flex flex-row gap-2 items-center p-4 hover:bg-purple-600">
+                <div className="flex flex-row gap-2">{item.icon}</div>
                 <div>{item.label}</div>
               </div>
             </Link>
           ))}
-        </div>
 
+          {/* Logout Button */}
+         
+        </div>
+      
         {/* Main Content */}
         <div className="w-full absolute mt-14 lg:w-[76%] xl:w-[80%] lg:relative lg:mt-0 lg:ml-auto min-h-screen">
           <Outlet />

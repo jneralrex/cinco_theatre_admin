@@ -1,34 +1,36 @@
 import React, { useState } from 'react'
-import AddLocation from '../components/globalController/triggers/AddLocation';
+import AddScreen from '../components/globalController/triggers/AddScreen';
+
 const mockUsers = Array.from({ length: 50 }, (_, index) => ({
-  id: index + 1,
-  name: `User ${index + 1}`,
-  email: `user${index + 1}@example.com`,
-  phone: `123-456-789${index % 10}`,
-}));
-const LocationControll = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+    id: index + 1,
+    name: `User ${index + 1}`,
+    email: `user${index + 1}@example.com`,
+    phone: `123-456-789${index % 10}`,
+  }));
 
-  const totalPages = Math.ceil(mockUsers.length / rowsPerPage);
-  const displayedUsers = mockUsers.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
-return (
-  <div className="max-h-screen w-full  pt-2 pb-20 lg:pb-20">
+const ScreenManagement = () => {
+      const [currentPage, setCurrentPage] = useState(1);
+      const rowsPerPage = 10;
+    
+      const totalPages = Math.ceil(mockUsers.length / rowsPerPage);
+      const displayedUsers = mockUsers.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+      );
+    
+      const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+      };
+    
+      const handlePrevPage = () => {
+        if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+      };
+  return (
+    <div className="max-h-screen w-full  pt-2 pb-20 lg:pb-20">
     <div className="flex flex-row items-center justify-between w-[90%] m-auto">
-    <AddLocation/>
+    <AddScreen/>
     <div className="text-center text-xl font-bold mb-4">
-        Location Management
+        Screen Management
       </div>
     </div>
     <table className="w-[90%] m-auto text-center border border-gray-300 shadow-sm">
@@ -76,8 +78,7 @@ return (
         Next
       </button>
     </div>
-  </div>
-)
+  </div>  )
 }
 
-export default LocationControll
+export default ScreenManagement

@@ -15,7 +15,7 @@ const AddScreen = () => {
   return (
     <div className='mb-1'>
     <button onClick={toggleScreenModal} className='bg-purple-500 p-2 rounded-lg text-white'>
-      Add Theatre
+      Add Screen
     </button>
     {addScreen && <ScreenForm closeScreenForm={toggleScreenModal} />}
 </div>  )
