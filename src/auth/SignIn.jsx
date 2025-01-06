@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-
+import Logo from '../assets/images/cinco-logo.png'
 const SignIn = () => {
 
   return (
     <div>
       <div className='flex justify-center items-center'>
-        <img src="/public/cinco-logo.png" alt="" className=''/>
+        <img src={Logo} alt="" className=''/>
       </div>
     <div className="p-3 max-w-lg mx-auto">
         <form className='flex flex-col gap-4'>

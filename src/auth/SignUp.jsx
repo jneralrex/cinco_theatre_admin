@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import Logo from '../assets/images/cinco-logo.png'
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -10,7 +11,7 @@ const SignUp = () => {
   return (
     <div>
           <div className='flex justify-center items-center'>
-        <img src="/public/cinco-logo.png" alt="" className='h-40'/>
+        <img src={Logo} alt="" className='h-40'/>
       </div>
         <div className="p-3 max-w-lg mx-auto">
             <form className='flex flex-col gap-4'>
