@@ -22,6 +22,9 @@ import Ads from "./pages/Ads";
 import GeneralSettings from "./pages/GeneralSettings";
 import Report from "./pages/Report";
 import ScreenManagement from "./pages/ScreenManagement";
+import ClassManagement from "./pages/ClassManagement";
+import SeatBlockingManagement from "./pages/SeatBlockingManagement";
+import SeatingRowManagement from "./pages/SeatingRowManagement";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,7 +36,11 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/event-management" element={<EventManagement />} />
+        <Route path="/class" element={<ClassManagement />} />
         <Route path="/movie-management" element={<MovieManagement />} />
+        <Route path="/row-management" element={<SeatingRowManagement />} />
+        <Route path="/movie-management" element={<MovieManagement />} />
+        <Route path="/seat-blocking" element={<SeatBlockingManagement />} />
         <Route path="/theatre-admin" element={<TheatreAdminManagement />} />
         <Route path="/theatre-management" element={<TheatreManagement />} />
         <Route path="/tickets" element={<Tickets />} />

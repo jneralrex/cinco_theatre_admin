@@ -9,6 +9,7 @@ const SignIn = () => {
         <img src={Logo} alt="" className=''/>
       </div>
     <div className="p-3 max-w-lg mx-auto">
+         <p className='text-center text-2xl text-gray-500 p-2'>Web Admin</p>
         <form className='flex flex-col gap-4'>
             <label htmlFor="">
                 <input type="text" name="" id="" className='w-full border rounded-lg p-2' placeholder='name or email'/>
