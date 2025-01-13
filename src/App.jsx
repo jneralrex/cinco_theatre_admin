@@ -25,12 +25,20 @@ import ScreenManagement from "./pages/ScreenManagement";
 import ClassManagement from "./pages/ClassManagement";
 import SeatBlockingManagement from "./pages/SeatBlockingManagement";
 import SeatingRowManagement from "./pages/SeatingRowManagement";
+import VerifyOtp from "./auth/VerifyOtp";
+import ResendOtp from "./auth/ResendOtp";
+import ForgotPassword from "./auth/ForgotPassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/otp" element={<VerifyOtp />} />
+      <Route path="/resend-otp" element={<ResendOtp />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+
 
       <Route element={<Nav />}>
         <Route path="/dashboard" element={<DashBoard />} />
@@ -60,7 +68,7 @@ const router = createBrowserRouter(
 const App = () => {
   return (
     <Global>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </Global>
   );
 };
