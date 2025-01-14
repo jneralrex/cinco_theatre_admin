@@ -8,7 +8,6 @@ const SignIn = () => {
     usernameOrEmail: "",
     password: "",
   });
-  const [response, setResponse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,7 +23,6 @@ const SignIn = () => {
     setError("");
     try {
       const res = await Api.post(`/auth/signin`, signInAdmin);
-      console.log(res);
       if(res.data.message === "Login successful"){
         navigate("/dashboard")
       }
@@ -76,7 +74,7 @@ const SignIn = () => {
             {loading ? "Submitting" : "Submit"}
           </button>
         </form>
-        <div className="w-full flex flex-row justify-between">
+        <div className="w-full flex flex-row justify-between text-[12px] md:text-[14px]">
           <div className=" flex flex-row gap-3">
             Dont have an account?
             <Link to='/sign-up'>
