@@ -5,18 +5,18 @@ const Api = axios.create({
   withCredentials: true, 
 });
 
+// Request Interceptor
 Api.interceptors.request.use(
-  (config) => {
-    return config;
-  },
+  (config) => config,
   (error) => {
     console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
 
+// Response Interceptor
 Api.interceptors.response.use(
-  (response) => response, 
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
@@ -33,15 +33,18 @@ Api.interceptors.response.use(
           { withCredentials: true }
         );
 
-        return apiClient(originalRequest);
+        originalRequest.headers.Authorization = `Bearer ${data.accesstoken}`;
+        return Api(originalRequest);
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
 
+        alert('Your session has expired. Please sign in again.');
         window.location.href = '/sign-in';
         return Promise.reject(refreshError);
       }
     }
 
+    console.error('Response error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );

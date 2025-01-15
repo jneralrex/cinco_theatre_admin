@@ -1,92 +1,83 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Logo from "../assets/images/cinco-logo.png";
-import Api from "../utils/AxiosInstance";
+import { loggWebAdmin } from "../redux/slices/adminSlice";
+
 const SignIn = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.admin);
+
   const [signInAdmin, setSignInAdmin] = useState({
     usernameOrEmail: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleInput = (e) => {
     setSignInAdmin({ ...signInAdmin, [e.target.name]: e.target.value });
   };
-  const handleSignIn = async (e) => {
+
+  const handleSignIn = (e) => {
     e.preventDefault();
     if (!signInAdmin.usernameOrEmail || !signInAdmin.password) {
-      setError("Fields can not be empty");
+      alert("Fields cannot be empty");
+      return;
     }
-    setLoading(true);
-    setError("");
-    try {
-      const res = await Api.post(`/auth/signin`, signInAdmin);
-      if(res.data.message === "Login successful"){
-        navigate("/dashboard")
+    dispatch(loggWebAdmin(signInAdmin)).then((action) => {
+      if (action.type === "admin/loggWebAdmin/fulfilled") {
+        navigate("/dashboard");
       }
-    } catch (error) {
-      setError(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
-      setSignInAdmin({ usernameOrEmail: "", password: "" });
-    } finally {
-      setLoading(false);
-    }
+    });
   };
+
   return (
     <div>
       <div className="flex justify-center items-center">
-        <img src={Logo} alt="" className="" />
+        <img src={Logo} alt="" />
       </div>
       <div className="p-3 max-w-lg mx-auto">
         <p className="text-center text-2xl text-gray-500 p-2">Web Admin</p>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         <form className="flex flex-col gap-4" onSubmit={handleSignIn}>
-          <label htmlFor="">
+          <label>
             <input
               type="text"
               name="usernameOrEmail"
-              id=""
               className="w-full border rounded-lg p-2"
-              placeholder="name or email"
+              placeholder="Name or Email"
               value={signInAdmin.usernameOrEmail}
               onChange={handleInput}
             />
           </label>
-          <label htmlFor="">
+          <label>
             Password
             <input
               type="password"
               name="password"
-              id=""
               className="w-full border rounded-lg p-2"
-              placeholder="password"
+              placeholder="Password"
               value={signInAdmin.password}
               onChange={handleInput}
             />
           </label>
           <button
+            type="submit"
             className="w-full bg-purple-700 rounded-lg p-2 text-white text-lg"
             disabled={loading}
           >
-            {loading ? "Submitting" : "Submit"}
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </form>
-        <div className="w-full flex flex-row justify-between text-[12px] md:text-[14px]">
-          <div className=" flex flex-row gap-3">
-            Dont have an account?
-            <Link to='/sign-up'>
-              <span className="text-blue-600">
-                sign up
-              </span>
+        <div className="w-full flex justify-between text-sm">
+          <span>
+            Don't have an account?{" "}
+            <Link to="/sign-up" className="text-blue-600">
+              Sign Up
             </Link>
-          </div>
-          <Link to='/forgot-password'>
-            <div>
-              Forgot password
-            </div>
+          </span>
+          <Link to="/forgot-password" className="text-blue-600">
+            Forgot Password
           </Link>
         </div>
       </div>

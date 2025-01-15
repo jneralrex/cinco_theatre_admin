@@ -1,78 +1,55 @@
-import React, { useState } from "react";
-
-const mockUsers = Array.from({ length: 50 }, (_, index) => ({
-  id: index + 1,
-  name: `User ${index + 1}`,
-  email: `user${index + 1}@example.com`,
-  phone: `123-456-789${index % 10}`,
-}));
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUser } from "../redux/slices/usersSlice";
 
 const UserManagement = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const dispatch = useDispatch();
 
-  const totalPages = Math.ceil(mockUsers.length / rowsPerPage);
-  const displayedUsers = mockUsers.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  // Extracting loading, error, and users from the Redux store
+  const { loading, error, users } = useSelector((state) => state.users);
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
+  // Fetch all users when the component mounts
+  useEffect(() => {
+    dispatch(getAllUser());
+  }, [dispatch]);
 
   return (
-    <div className="max-h-screen w-full  pt-2 pb-20 lg:pb-20">
+    <div className="max-h-screen w-full pt-2 pb-20 lg:pb-20">
       <h1 className="text-center text-xl font-bold mb-4">User Management</h1>
-      <table className="w-[90%] m-auto text-center border border-gray-300 shadow-sm">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Phone</th>
-            <th className="p-2 border"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedUsers.map((user) => (
-            <tr key={user.id} className="hover:bg-gray-100">
-              <td className="p-2 border">{user.name}</td>
-              <td className="p-2 border">{user.email}</td>
-              <td className="p-2 border">{user.phone}</td>
-              <td className="p-2 border">
-                <select className="border p-1">
-                <option value="">action</option>
-                  <option value="">Edit</option>
-                  <option value="">Delete</option>
-                </select>
-              </td>
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">Error: {error}</p>
+      ) : users.length > 0 ? (
+        <table className="w-[90%] m-auto text-center border border-gray-300 shadow-sm">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="p-2 border">Name</th>
+              <th className="p-2 border">Email</th>
+              <th className="p-2 border">Phone</th>
+              <th className="p-2 border">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="flex justify-between items-center w-[90%] m-auto mt-4">
-        <button
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-        >
-          Next
-        </button>
-      </div>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user._id} className="hover:bg-gray-100">
+                <td className="p-2 border">{user.username || "N/A"}</td>
+                <td className="p-2 border">{user.email || "N/A"}</td>
+                <td className="p-2 border">{user.phoneNumber || "N/A"}</td>
+                <td className="p-2 border">
+                  <select className="border p-1">
+                    <option value="">Select Action</option>
+                    <option value="edit">Edit</option>
+                    <option value="delete">Delete</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-center">No users available.</p>
+      )}
     </div>
   );
 };
