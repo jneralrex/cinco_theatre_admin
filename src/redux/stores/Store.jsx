@@ -5,7 +5,7 @@ import storage from "redux-persist/lib/storage"; // Defaults to localStorage
 import { combineReducers } from "redux";
 import adminReducer from "../slices/adminSlice";
 import usersReducer from "../slices/usersSlice";
-
+import theatreAdminsReducer from "../slices/TheatreAdminSlice";
 // Logger middleware
 const logger = createLogger({
   collapsed: true,
@@ -23,6 +23,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   admin: adminReducer,
   users: usersReducer,
+  theatreAdmins: theatreAdminsReducer,
 });
 
 // Persisted reducer

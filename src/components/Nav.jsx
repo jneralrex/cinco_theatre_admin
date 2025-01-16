@@ -34,9 +34,6 @@ const Nav = () => {
     navigate("/sign-in"); // Redirect to login
   };
 
-
-
-
   const navItems = [
     { icon: <MdHome />, label: "Overview", path: "/dashboard" },
     { icon: <MdOutlineManageAccounts />, label: "User management", path: "/user-management" },

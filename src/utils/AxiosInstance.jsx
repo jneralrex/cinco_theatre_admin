@@ -5,7 +5,6 @@ const Api = axios.create({
   withCredentials: true, 
 });
 
-// Request Interceptor
 Api.interceptors.request.use(
   (config) => config,
   (error) => {
@@ -14,7 +13,6 @@ Api.interceptors.request.use(
   }
 );
 
-// Response Interceptor
 Api.interceptors.response.use(
   (response) => response,
   async (error) => {

@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllUser, deleteUser } from "../redux/slices/usersSlice";
+import { getAllUser, deleteUser, viewSelectedUser } from "../redux/slices/usersSlice";
 import EditUser from "../components/globalController/forms/EditUser";
+import { encryptId } from "../utils/Crypto";
+import SingleUserModal from "../components/globalController/SingleUserModal";
 
 const UserManagement = () => {
   const dispatch = useDispatch();
   const { loading, error, users, currentPage, totalPages } = useSelector(
     (state) => state.users
   );
-  const [selectedUser, setSelectedUser] = useState(null); 
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false); 
+  const [viewUserDetails, setViewUserDetails] = useState(null);
 
   useEffect(() => {
     dispatch(getAllUser({ page: currentPage, limit: 10 }));
@@ -24,7 +28,8 @@ const UserManagement = () => {
   const handleDeleteUser = (userId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this user?");
     if (confirmDelete) {
-      dispatch(deleteUser(userId))
+      const encryptedId = encryptId(userId);
+      dispatch(deleteUser({ userId: encryptedId, page: currentPage, limit: 10 }))
         .unwrap()
         .then(() => {
           dispatch(getAllUser({ page: currentPage, limit: 10 }));
@@ -37,12 +42,30 @@ const UserManagement = () => {
 
   const handleEditUser = (user) => {
     setSelectedUser(user);
-    setIsModalOpen(true);
+    setIsEditModalOpen(true); 
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null); 
+  const handleViewUser = (userId) => {
+    const encryptedId = encryptId(userId);
+    dispatch(viewSelectedUser(encryptedId))
+      .unwrap()
+      .then((userDetails) => {
+        setViewUserDetails(userDetails); 
+        setIsViewModalOpen(true); 
+      })
+      .catch((err) => {
+        console.error("Error viewing user:", err);
+      });
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setViewUserDetails(null);
   };
 
   return (
@@ -76,10 +99,13 @@ const UserManagement = () => {
                       className="border p-1"
                       onChange={(e) => {
                         if (e.target.value === "edit") {
-                          handleEditUser(user); 
+                          handleEditUser(user);
                         }
                         if (e.target.value === "delete") {
-                          handleDeleteUser(user._id);
+                          handleDeleteUser(user._id); 
+                        }
+                        if (e.target.value === "view") {
+                          handleViewUser(user._id); 
                         }
                       }}
                     >
@@ -119,10 +145,18 @@ const UserManagement = () => {
 
           {/* Edit User Modal */}
           <EditUser
-            isOpen={isModalOpen}
-            onClose={closeModal}
+            isOpen={isEditModalOpen}
+            onClose={closeEditModal}
             user={selectedUser}
           />
+
+          {/* View Selected User Modal */}
+          {isViewModalOpen && viewUserDetails && (
+            <SingleUserModal
+              user={viewUserDetails}
+              onClose={closeViewModal}
+            />
+          )}
         </>
       ) : (
         <p className="text-center">No users available.</p>

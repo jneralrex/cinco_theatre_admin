@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Api from "../../utils/AxiosInstance";
+import { decryptId } from "../../utils/Crypto";
 
 const initialState = {
   loading: false,
@@ -8,15 +9,15 @@ const initialState = {
   currentPage: 1,
   totalPages: 1,
   totalUsers: 0,
+  singleUser: null,
 };
 
 export const getAllUser = createAsyncThunk(
   "users/getAllUser",
-  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
-      // Pass pagination parameters to the API
       const res = await Api.get(`/user/all-users`, {
-        params: { page, limit }, // Include page and limit in the request
+        params: { page, limit },
       });
 
       if (res.data.success) {
@@ -37,31 +38,43 @@ export const getAllUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(
   "users/deleteUser",
-  async (userId, { rejectWithValue, dispatch }) => {
+  async ({ userId, page, limit }, { rejectWithValue, dispatch }) => {
     try {
-      await Api.delete(`/user/delete/${userId}`, { withCredentials: true });
-
-      dispatch(getAllUser({ page: 1, limit: 10 }));
+        const decryptedId = decryptId(userId);
+        await Api.delete(`/user/delete/${decryptedId}`, { withCredentials: true });
+      dispatch(getAllUser({ page, limit }));
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
 
-export const editUser = createAsyncThunk(
-    'users/editUser',
-    async ({ userId, userData }, { rejectWithValue }) => {
-      try {
-        const response = Api.patch(`/user/individual-user/${userId}`, userData, {withCredentials: true},
-        );
-        console.log(response.data)
-        return response.data;
-      } catch (error) {
-        return rejectWithValue(error.response?.data || error.message);
-      }
+export const viewSelectedUser = createAsyncThunk("users/viewSelectedUser", async(userId, {rejectWithValue})=>{
+    try {
+        const decryptedId = decryptId(userId);
+        const res = await Api.get(`/user/individual-user/${decryptedId}`, { withCredentials: true });
+        return res.data;
+    } catch (error) {
+        return rejectWithValue(error.response?.data?.message || error.message);
     }
-  );
-  
+});
+
+export const editUser = createAsyncThunk(
+  "users/editUser",
+  async ({ userId, userData, page, limit }, { rejectWithValue, dispatch }) => {
+    try {
+        const decryptedId = decryptId(userId);
+
+      await Api.patch(`/user/individual-user/${decryptedId}`, userData);
+
+      dispatch(getAllUser({ page, limit }));
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+
 
 const userSlice = createSlice({
   name: "users",
@@ -104,12 +117,13 @@ const userSlice = createSlice({
       })
       .addCase(editUser.fulfilled, (state) => {
         state.loading = false;
+        state.singleUser = action.payload;
         state.error = "";
       })
       .addCase(editUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
   },
 });
 

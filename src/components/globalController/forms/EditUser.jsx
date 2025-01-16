@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { editUser } from "../../../redux/slices/usersSlice";
 import { MdCancel } from "react-icons/md";
+import { encryptId } from "../../../utils/Crypto";
 
 const EditUser = ({ isOpen, onClose, user }) => {
     const dispatch = useDispatch();
@@ -29,17 +30,24 @@ const EditUser = ({ isOpen, onClose, user }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(editUser({ userId: user._id, ...formData }))
+        if (!formData.username || !formData.email) {
+            alert("Username and Email are required!");
+            return;
+        }
+        dispatch(editUser({ userId: encryptId(user._id), userData: formData }))
             .unwrap()
             .then(() => {
-                onClose(); 
+                onClose();
             })
             .catch((err) => {
                 console.error("Error editing user:", err);
             });
     };
+    
 
     if (!isOpen) return null; 
+
+
 
     return (
         <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">

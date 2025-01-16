@@ -5,7 +5,6 @@ import App from "./App.jsx";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import Store, { persistor } from "./redux/stores/Store.jsx";
-// import { Store, persistor } from "./redux/stores/Store.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -14,5 +13,5 @@ createRoot(document.getElementById("root")).render(
         <App />
       </PersistGate>
     </Provider>
-  </StrictMode>
+  </StrictMode>           
 );

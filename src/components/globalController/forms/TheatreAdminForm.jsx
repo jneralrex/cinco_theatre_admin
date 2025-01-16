@@ -1,9 +1,49 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
+import { useDispatch } from "react-redux";
+import { createTheatreAdmin } from "../../../redux/slices/TheatreAdminSlice";
 
 const TheatreAdminForm = () => {
-  const { addTheatreAdmin, setAddTheatreAdmin } = useContext(GlobalController);
+  const { setAddTheatreAdmin } = useContext(GlobalController);
+  const dispatch = useDispatch();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    phoneNumber: "",
+    email: "",
+    role: "",
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { name, phoneNumber, email, role } = formData;
+
+    if (!name || !phoneNumber || !email || !role) {
+      alert("All fields are required.");
+      return;
+    }
+
+    dispatch(createTheatreAdmin(formData))
+      .unwrap()
+      .then(() => {
+        setFormData({
+          name: "",
+          phoneNumber: "",
+          email: "",
+          role: "",
+        });
+        setAddTheatreAdmin(""); 
+      })
+      .catch((error) => {
+        console.error("Failed to create theatre admin:", error);
+      });
+  };
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
@@ -17,28 +57,40 @@ const TheatreAdminForm = () => {
           <MdCancel size={24} />
         </button>
 
-        {/* Form Title */}
         <h2 className="text-xl font-bold text-center mb-4">Add Theatre Admin</h2>
 
-        {/* Form */}
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
             type="text"
-            id="adminName"
+            id="name"
             placeholder="Admin Name"
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            id="phoneNumber"
+            placeholder="Phone Number"
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.phoneNumber}
+            onChange={handleChange}
           />
           <input
             type="email"
-            id="adminEmail"
+            id="email"
             placeholder="Admin Email"
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.email}
+            onChange={handleChange}
           />
           <input
-            type="password"
-            id="adminPassword"
-            placeholder="Password"
+            type="text"
+            id="role"
+            placeholder="Role (e.g. web-admin)"
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.role}
+            onChange={handleChange}
           />
           <button
             type="submit"
