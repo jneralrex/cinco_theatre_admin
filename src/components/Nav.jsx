@@ -13,10 +13,11 @@ import { FaRegNewspaper } from "react-icons/fa";
 import { PiTelevisionSimpleThin } from "react-icons/pi";
 import { MdEventSeat } from "react-icons/md";
 import { RxRows } from "react-icons/rx";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Nav = () => {
-  const  loggedAdmin  = useSelector((state) => state.admin.admin);
+ 
+  const  loggedAdmin = useSelector((state) => state.admin.admin);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -32,6 +33,9 @@ const Nav = () => {
     localStorage.removeItem("token"); // Example: Clear token
     navigate("/sign-in"); // Redirect to login
   };
+
+
+
 
   const navItems = [
     { icon: <MdHome />, label: "Overview", path: "/dashboard" },

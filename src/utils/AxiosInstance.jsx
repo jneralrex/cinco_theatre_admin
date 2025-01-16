@@ -18,22 +18,27 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.error('Response Interceptor Triggered:', error);
+
     const originalRequest = error.config;
 
+    if (error.response?.status === 500) {
+      console.error('Server error occurred:', error.response.data);
+      alert('An unexpected error occurred. Please try again later.');
+    }
+
     if (
-      error.response?.status === 401 && 
-      !originalRequest._retry 
+      (error.response?.status === 403 || error.response?.status === 401) &&
+      !originalRequest._retry
     ) {
       originalRequest._retry = true;
-
       try {
         const { data } = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/auth/refreshtoken`,
-          {}, 
+          {},
           { withCredentials: true }
         );
 
-        originalRequest.headers.Authorization = `Bearer ${data.accesstoken}`;
         return Api(originalRequest);
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
@@ -44,9 +49,9 @@ Api.interceptors.response.use(
       }
     }
 
-    console.error('Response error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );
+
 
 export default Api;
