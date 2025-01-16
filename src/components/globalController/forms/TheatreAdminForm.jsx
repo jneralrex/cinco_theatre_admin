@@ -9,10 +9,11 @@ const TheatreAdminForm = () => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     phoneNumber: "",
     email: "",
     role: "",
+    password:""
   });
 
   const handleChange = (e) => {
@@ -22,9 +23,9 @@ const TheatreAdminForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, phoneNumber, email, role } = formData;
+    const { username, phoneNumber, email, role, password } = formData;
 
-    if (!name || !phoneNumber || !email || !role) {
+    if (!username || !phoneNumber || !email || !role || !password) {
       alert("All fields are required.");
       return;
     }
@@ -33,10 +34,11 @@ const TheatreAdminForm = () => {
       .unwrap()
       .then(() => {
         setFormData({
-          name: "",
+          username: "",
           phoneNumber: "",
           email: "",
           role: "",
+          password:"",
         });
         setAddTheatreAdmin(""); 
       })
@@ -62,10 +64,10 @@ const TheatreAdminForm = () => {
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
             type="text"
-            id="name"
+            id="username"
             placeholder="Admin Name"
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.name}
+            value={formData.username}
             onChange={handleChange}
           />
           <input
@@ -90,6 +92,14 @@ const TheatreAdminForm = () => {
             placeholder="Role (e.g. web-admin)"
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.role}
+            onChange={handleChange}
+          />
+           <input
+            type="password"
+            id="password"
+            placeholder="*********"
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.password}
             onChange={handleChange}
           />
           <button
