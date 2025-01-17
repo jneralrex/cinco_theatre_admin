@@ -1,20 +1,31 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { MdCancel } from "react-icons/md";
-import { GlobalController } from "../Global";
 import { useDispatch, useSelector } from "react-redux";
-import { createLocation, getAllLocation } from "../../../redux/slices/locationSlice";
+import { editCity } from "../../../redux/slices/locationSlice";
 
-const LocationForm = () => {
-  const { addLocation, setAddLocation } = useContext(GlobalController);
+const EditCity = ({ isOpen, onClose, location }) => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.locations);
-  const [page, setPage] = useState(1);
 
   const [formData, setFormData] = useState({
-    state: "",
-    city: "",
-    street: "",
+    state: location?.state || "",
+    city: location?.city || "",
+    newCity: "",
+    newStreet: "",
   });
+  
+
+  useEffect(() => {
+    if (location) {
+      console.log("Location data:", location);
+      setFormData({
+        state: location.state || "",
+        city: location.city || "",
+        newCity: "",
+        newStreet: "",
+      });
+    }
+  }, [location]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -23,23 +34,23 @@ const LocationForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { state, city, street } = formData;
-
-    if (!state || !city || !street) {
+    const { state, city, newCity, newStreet } = formData;
+  
+    if (!state || !city || !newCity || !newStreet) {
+      console.error("Missing fields:", { state, city, newCity, newStreet });
       alert("Please fill in all fields");
       return;
     }
-
-    dispatch(createLocation(formData))
+  
+    dispatch(editCity(formData))
       .unwrap()
       .then(() => {
-        setFormData({ state: "", city: "", street: "" });
-        setAddLocation(false);
-        dispatch(getAllLocation({ page }));
-
+        setFormData({ state: "", city: "", newCity: "", newStreet: "" });
+        onClose();
       })
       .catch((err) => console.error(err));
   };
+  
 
   return (
     <div
@@ -50,8 +61,8 @@ const LocationForm = () => {
       <div className="relative bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
         <button
           aria-label="Close"
-          onClick={() => setAddLocation(false)}
           className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+          onClick={onClose}
         >
           <MdCancel size={24} />
         </button>
@@ -74,19 +85,27 @@ const LocationForm = () => {
               formData.state ? "border-gray-300" : "border-red-500"
             } p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
           />
-          <input
+           <input
             type="text"
             name="city"
-            placeholder="City"
+            placeholder="city"
             value={formData.city}
             onChange={handleInputChange}
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          <input
+            <input
             type="text"
-            name="street"
-            placeholder="Street"
-            value={formData.street}
+            name="newCity"
+            placeholder="newCity"
+            value={formData.newCity}
+            onChange={handleInputChange}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+           <input
+            type="text"
+            name="newStreet"
+            placeholder="newStreet"
+            value={formData.newStreet}
             onChange={handleInputChange}
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -105,4 +124,4 @@ const LocationForm = () => {
   );
 };
 
-export default LocationForm;
+export default EditCity;

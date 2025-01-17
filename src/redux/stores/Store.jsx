@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createLogger } from "redux-logger";
 import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage"; // Defaults to localStorage
+import storage from "redux-persist/lib/storage"; 
 import { combineReducers } from "redux";
 import adminReducer from "../slices/adminSlice";
 import usersReducer from "../slices/usersSlice";
 import theatreAdminsReducer from "../slices/TheatreAdminSlice";
+import locationReducer from "../slices/locationSlice"
+
 // Logger middleware
 const logger = createLogger({
   collapsed: true,
@@ -24,6 +26,7 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   users: usersReducer,
   theatreAdmins: theatreAdminsReducer,
+  locations:locationReducer
 });
 
 // Persisted reducer

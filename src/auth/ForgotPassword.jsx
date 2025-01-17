@@ -23,11 +23,13 @@ const ForgotPassword = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await Api.post(`auth/resendotp`, forgotPassword);
-      setResponse(res.data.message);
-      if (res.data.message === "New OTP sent to your email. Please verify.") {
+      const res = await Api.patch(`auth/forgotpassword`, forgotPassword);
+      setResponse(res.data.data.message);
+      if (res.data.message === "Password reset email sent.") {
         navigate("/otp");
       }
+      console.log(res);
+
     } catch (error) {
       setError(
         error.response?.data?.message || "An error occurred. Please try again."

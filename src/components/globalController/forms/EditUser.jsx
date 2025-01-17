@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { editUser } from "../../../redux/slices/usersSlice";
 import { MdCancel } from "react-icons/md";
 import { encryptId } from "../../../utils/Crypto";
+import { editUser } from "../../../redux/slices/usersSlice";
 
 const EditUser = ({ isOpen, onClose, user }) => {
     const dispatch = useDispatch();

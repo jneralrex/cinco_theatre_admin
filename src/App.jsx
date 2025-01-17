@@ -28,6 +28,7 @@ import SeatingRowManagement from "./pages/SeatingRowManagement";
 import VerifyOtp from "./auth/VerifyOtp";
 import ResendOtp from "./auth/ResendOtp";
 import ForgotPassword from "./auth/ForgotPassword";
+import RecoverPassword from "./auth/RecoverPassword";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,6 +38,8 @@ const router = createBrowserRouter(
       <Route path="/otp" element={<VerifyOtp />} />
       <Route path="/resend-otp" element={<ResendOtp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:token" element={<RecoverPassword />} />
+
 
 
 
