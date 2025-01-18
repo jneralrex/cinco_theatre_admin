@@ -19,7 +19,6 @@ export const getAllLocation = createAsyncThunk(
           `location/locations?page=${page}&limit=${limit}`
         );
         if (res.data.success) {
-          // Return the entire "data" key to match the state structure
           return res.data;
         }
         throw new Error("Invalid response structure");
@@ -32,7 +31,7 @@ export const getAllLocation = createAsyncThunk(
 
 export const createLocation = createAsyncThunk(
   "locations/createLocation",
-  async (credentials, { rejectWithValue, dispatch }) => {
+  async (credentials, { rejectWithValue }) => {
     try {
       const res = await Api.post(`location/create-location`, credentials);
       if(res.data.success){
@@ -63,7 +62,7 @@ export const editState = createAsyncThunk(
     "locations/editCity",
     async (credentials, { rejectWithValue}) => {
       try {
-        const res = await Api.put(`location/city`, credentials); // Correct endpoint assumed
+        const res = await Api.put(`location/city`, credentials); 
         if (res.data.success) {
         return res.data;
         }
@@ -87,6 +86,30 @@ export const editState = createAsyncThunk(
     }
   );
   
+  export const deleteCity = createAsyncThunk("locations/deleteCity", async({selectedState, selectedCity}, {rejectWithValue})=>{
+    try {
+      const res = await Api.delete(`location/city/${selectedState}/${selectedCity}`);
+      if (res.data.success) {
+        return res.data;
+      }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const viewState = createAsyncThunk("locations/viewState", async (selectedState, { rejectWithValue }) => {
+  try {
+    const res = await Api.get(`location/location/${selectedState}`);
+    console.log("API Response:", res.data); 
+      return res.data; 
+  } catch (error) {
+    console.error("Error in viewState:", error);
+    return rejectWithValue(error.response?.data?.message || error.message);
+  }
+});
+
+
 
   const locationSlice = createSlice({
     name: "locations",
@@ -157,6 +180,31 @@ export const editState = createAsyncThunk(
             state.error = "";
           })
           .addCase(deleteState.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+          })
+          .addCase(deleteCity.pending, (state) => {
+            state.loading = true;
+            state.error = "";
+          })
+          .addCase(deleteCity.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = "";
+          })
+          .addCase(deleteCity.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+          })
+          .addCase(viewState.pending, (state) => {
+            state.loading = true;
+            state.error = "";
+          })
+          .addCase(viewState.fulfilled, (state, action) => {
+            state.loading = false;
+            state.singleLocation = action.payload; 
+            state.error = "";
+          })          
+          .addCase(viewState.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
           })

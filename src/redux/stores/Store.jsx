@@ -6,7 +6,9 @@ import { combineReducers } from "redux";
 import adminReducer from "../slices/adminSlice";
 import usersReducer from "../slices/usersSlice";
 import theatreAdminsReducer from "../slices/TheatreAdminSlice";
-import locationReducer from "../slices/locationSlice"
+import locationReducer from "../slices/locationSlice";
+import screenReducer from "../slices/ScreenSlice";
+import adsReducer from "../slices/AdsSlice";
 
 // Logger middleware
 const logger = createLogger({
@@ -26,9 +28,10 @@ const rootReducer = combineReducers({
   admin: adminReducer,
   users: usersReducer,
   theatreAdmins: theatreAdminsReducer,
-  locations:locationReducer
+  locations:locationReducer,
+  screens:screenReducer,
+  ads:adsReducer,
 });
-
 // Persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

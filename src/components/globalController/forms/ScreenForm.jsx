@@ -1,9 +1,40 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
+import { useDispatch } from "react-redux";
+import { createScreen, getAllScreen } from "../../../redux/slices/ScreenSlice";
 
 const ScreenForm = () => {
   const { addScreen, setAddScreen } = useContext(GlobalController);
+  const [createNewScreen, setCreateNewScreen] = useState({
+    screenName: "",
+    screenCapacity: "",
+    screenType: "",
+  });
+  const dispatch = useDispatch();
+
+  const handleInput = (e) => {
+    setCreateNewScreen({ ...createNewScreen, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(createScreen(createNewScreen))
+      .unwrap()
+      .then(() => {
+        setCreateNewScreen({
+          screenName: "",
+          screenCapacity: "",
+          screenType: "",
+        });
+        setAddScreen("")
+       dispatch(getAllScreen())
+        
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
@@ -19,17 +50,32 @@ const ScreenForm = () => {
 
         {/* Form */}
         <h2 className="text-xl font-bold text-center mb-4">Add New Screen</h2>
-        <form className="flex flex-col gap-4">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
             type="text"
-            id="theatreName"
-            placeholder="Theatre Name"
+            id="screenName"
+            name="screenName"
+            placeholder="Screen name"
+            onChange={handleInput}
+            value={createNewScreen.screenName}
+            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+            <input
+            type="text"
+            id="screenCapacity"
+            name="screenCapacity"
+            placeholder="screen capacity"
+            onChange={handleInput}
+            value={createNewScreen.screenCapacity}
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <input
             type="text"
-            id="screenTime"
-            placeholder="Time"
+            id="screenType"
+            name="screenType"
+            placeholder="Screen type"
+            onChange={handleInput}
+            value={createNewScreen.screenType}
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
