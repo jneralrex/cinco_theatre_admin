@@ -13,10 +13,11 @@ import { FaRegNewspaper } from "react-icons/fa";
 import { PiTelevisionSimpleThin } from "react-icons/pi";
 import { MdEventSeat } from "react-icons/md";
 import { RxRows } from "react-icons/rx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../redux/slices/adminSlice";
 
 const Nav = () => {
- 
+ const dispatch = useDispatch();
   const  loggedAdmin = useSelector((state) => state.admin.admin);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -30,8 +31,11 @@ const Nav = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Example: Clear token
-    navigate("/sign-in"); // Redirect to login
+    dispatch(logOut()).then((action)=>{
+      if (action.type === "admin/logOut/fulfilled") {
+        navigate("/sign-in"); 
+      }
+    })
   };
 
   const navItems = [
