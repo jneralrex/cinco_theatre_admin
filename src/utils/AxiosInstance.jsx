@@ -2,13 +2,11 @@ import axios from 'axios';
 
 const Api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  withCredentials: true, // Include cookies in requests
+  withCredentials: true, 
 });
 
-// Request Interceptor
 Api.interceptors.request.use(
   (config) => {
-    // Extract access token from cookies
     const token = document.cookie
       .split('; ')
       .find((row) => row.startsWith('accesstoken='))
@@ -26,15 +24,13 @@ Api.interceptors.request.use(
   }
 );
 
-// Response Interceptor
 Api.interceptors.response.use(
-  (response) => response, // Directly return successful responses
+  (response) => response, 
   async (error) => {
     console.error('Response Interceptor Triggered:', error);
 
     const originalRequest = error.config;
 
-    // Handle 401/403 errors for token refresh
     if (
       (error.response?.status === 403 || error.response?.status === 401) &&
       !originalRequest._retry
@@ -42,7 +38,6 @@ Api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Attempt token refresh
         const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/auth/refreshtoken`, {}, { withCredentials: true });
 
         document.cookie = `accesstoken=${data.token}; path=/; secure; SameSite=Strict`;
@@ -52,12 +47,11 @@ Api.interceptors.response.use(
         console.error('Token refresh failed:', refreshError);
 
         alert('Your session has expired. Please sign in again.');
-        window.location.replace('/sign-in'); // Redirect to sign-in
+        window.location.replace('/sign-in'); 
         return Promise.reject(refreshError);
       }
     }
 
-    // Handle server errors
     if (error.response?.status === 500) {
       console.error('Server error occurred:', error.response.data);
       alert('An unexpected error occurred. Please try again later.');

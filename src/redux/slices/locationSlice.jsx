@@ -102,7 +102,7 @@ export const viewState = createAsyncThunk("locations/viewState", async (selected
   try {
     const res = await Api.get(`location/location/${selectedState}`);
     console.log("API Response:", res.data); 
-      return res.data; 
+      return res.data 
   } catch (error) {
     console.error("Error in viewState:", error);
     return rejectWithValue(error.response?.data?.message || error.message);
