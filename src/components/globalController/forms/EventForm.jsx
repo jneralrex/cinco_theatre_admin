@@ -47,7 +47,7 @@ useEffect(() => {
       payload.append(key, formData[key]);
     });
 
-    dispatch(createEvent(payload))
+    dispatch(createEvent({ eventId: encryptId(eventId._id), eventData: payload }))
       .unwrap()
       .then(() => {
         setFormData({
@@ -60,13 +60,9 @@ useEffect(() => {
           currency: "",
           location: "",
         });
-        setAddEvent(false);
       })
       .catch((err) => {
         console.error(err);
-      })
-      .finally(()=>{
-        loading = false
       })
   };
 
@@ -123,6 +119,7 @@ useEffect(() => {
             <p className="text-center">No locations available.</p>
           )}
 
+          
           <input
             type="text"
             name="eventName"

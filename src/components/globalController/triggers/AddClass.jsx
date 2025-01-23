@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
 import { GlobalController } from '../Global';
-import ClassForm from '../forms/ClassForm';
+import ClassForm from '../forms/ClassForm'
 
 const AddClass = () => {
     const { addClass, setAddClass } = useContext(GlobalController);
+
     const toggleClassModal = () => {
         setAddClass(!addClass);
         if (!addClass) {

@@ -4,6 +4,8 @@ import { getEvents, vieweEvent } from "../redux/slices/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { encryptId } from "../utils/Crypto";
 import SingleEvent from "../components/globalController/SingleEvent";
+import EditEvent from "../components/globalController/forms/EditEvent";
+import Snackbar from "../components/globalController/triggers/Snackbar";
 
 const EventManagement = () => {
   const { loading, events, error } = useSelector((state) => state.events);
@@ -16,6 +18,32 @@ const EventManagement = () => {
   useEffect(() => {
     dispatch(getEvents());
   }, [dispatch]);
+
+  const [snackbar, setSnackbar] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+    isConfirmation: false,
+    onConfirm: null,
+    onCancel: null,
+  });
+
+  const showSnackbar = (
+    message,
+    type = "info",
+    isConfirmation = false,
+    onConfirm = null,
+    onCancel = null
+  ) => {
+    setSnackbar({
+      isOpen: true,
+      message,
+      type,
+      isConfirmation,
+      onConfirm,
+      onCancel,
+    });
+  };
 
   const handleViewEvent = (eventId) => {
     const encryptedId = encryptId(eventId);
@@ -30,13 +58,52 @@ const EventManagement = () => {
       });
   };
 
+  const handleEditEvent = (event) => {
+    showSnackbar(
+      "Are you sure you want to edit this event?",
+      "warning",
+      true,
+      () => {
+        setSelectedEvent(event);
+        setIsEditModalOpen(true);
+      },
+      () => {
+        showSnackbar("Edit canceled.", "info");
+      }
+    );
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    showSnackbar(
+      "Are you sure you want to delete this Event?",
+      "warning",
+      true,
+      () => {
+        const encryptedId = encryptId(eventId);
+        dispatch(deleteAds({ eventId: encryptedId }))
+          .unwrap()
+          .then(() => {
+            dispatch(getAllAds());
+            showSnackbar("Event deleted successfully!", "success");
+          })
+          .catch((error) => {
+            console.error(error);
+            showSnackbar("Failed to delete event.", "error");
+          });
+      },
+      () => {
+        showSnackbar("Deletion canceled.", "info");
+      }
+    );
+  };
+
   const handleAction = (action, event) => {
     switch (action) {
       case "edit":
-        // handleEditEvent(event);
+        handleEditEvent(event);
         break;
       case "delete":
-        // handleDeleteScreen(event._id);
+        handleDeleteEvent(event._id);
         break;
       case "view":
         handleViewEvent(event._id);
@@ -49,6 +116,11 @@ const EventManagement = () => {
   const closeViewModal = () => {
     setIsViewModalOpen(false);
     setViewEventDetails(null);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedEvent(null);
   };
 
   return (
@@ -77,7 +149,10 @@ const EventManagement = () => {
               </tr>
             </thead>
             {events.map((event) => (
-              <tr key={event._id} className="hover:bg-gray-100">
+              <tr
+                key={event._id}
+                className="hover:bg-gray-100 text-[12px] md:text-[14px]"
+              >
                 <td className="p-2 border">{event.eventName}</td>
                 <td className="p-2 border">{event.eventHost}</td>
                 <td className="p-2 border">
@@ -107,10 +182,24 @@ const EventManagement = () => {
       ) : (
         <p className="text-center">No events available.</p>
       )}
-
+      <EditEvent
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        event={selectedEvent}
+      />
       {isViewModalOpen && viewEventDetails && (
         <SingleEvent event={viewEventDetails} onClose={closeViewModal} />
       )}
+
+      <Snackbar
+        message={snackbar.message}
+        type={snackbar.type}
+        isOpen={snackbar.isOpen}
+        onClose={() => setSnackbar((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={snackbar.onConfirm}
+        onCancel={snackbar.onCancel}
+        isConfirmation={snackbar.isConfirmation}
+      />
     </div>
   );
 };

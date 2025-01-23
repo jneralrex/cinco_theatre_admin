@@ -13,9 +13,10 @@ export const Global = ({children}) => {
   const [addLocation, setAddLocation] = useState("");
   const [addNews, setAddNews] = useState("");
   const [addReport, setAddReport] = useState("");
+  const [addClass, setAddClass] = useState("");
   return (
     <GlobalController.Provider
-      value={{ addEvent, setAddEvent, addMovie, setAddMovie, addTheatreAdmin, setAddTheatreAdmin, addTheatre, setAddTheatre, addScreen, setAddScreen, addTicket, setAddTicket, addAds, setAddAds, addLocation, setAddLocation, addNews, setAddNews, addReport, setAddReport }}
+      value={{ addEvent, setAddEvent, addMovie, setAddMovie, addTheatreAdmin, setAddTheatreAdmin, addTheatre, setAddTheatre, addScreen, setAddScreen, addTicket, setAddTicket, addAds, setAddAds, addLocation, setAddLocation, addNews, setAddNews, addReport, setAddReport, addClass, setAddClass }}
     >
       {children}
     </GlobalController.Provider>

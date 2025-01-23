@@ -4,8 +4,10 @@ import { MdCancel } from "react-icons/md";
 
 const ClassForm = () => {
   const { addClass, setAddClass } = useContext(GlobalController);
+  
+
   return (
-    <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
+    <div className="bg-black/40 fixed inset-0 flex justify-center items-center min-h-screen z-50">
       <div className="relative bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
         {/* Close Button */}
         <button

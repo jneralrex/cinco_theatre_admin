@@ -40,6 +40,21 @@ export const vieweEvent = createAsyncThunk(
   }
 );
 
+export const deleteEvent = createAsyncThunk(
+  "events/deleteEvent",
+  async ({ eventId }, { rejectWithValue }) => {
+    try {
+      const decryptedId = decryptId(eventId);
+      await Api.delete(`event/delete-event/${decryptedId}`);
+      return res.data.event;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Something occurred, please try again"
+      );
+    }
+  }
+);
+
 export const getEvents = createAsyncThunk(
   "events/getEvents",
   async (_, { rejectWithValue }) => {
@@ -55,6 +70,24 @@ export const getEvents = createAsyncThunk(
     }
   }
 );
+
+
+export const editEvent = createAsyncThunk(
+  "events/editEvent",
+  async ({ eventId, eventData }, { rejectWithValue }) => {
+    try {
+      const decryptedId = decryptId(eventId);
+      const res = await Api.patch(`event/edit-event/${decryptedId}`, eventData);
+      console.log("event",res.data.event)
+      return res.data.event;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Something occurred, please try again"
+      );
+    }
+  }
+);
+
 
 const eventSlice = createSlice({
   name: "events",
@@ -97,6 +130,30 @@ const eventSlice = createSlice({
         state.error = "";
       })
       .addCase(vieweEvent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(editEvent.pending, (state, action) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(editEvent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(editEvent.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteEvent.pending, (state, action) => {
+        state.loading = true;
+        state.error = "";
+      })
+      .addCase(deleteEvent.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(deleteEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
