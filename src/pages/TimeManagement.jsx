@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AddTime from '../components/globalController/triggers/AddTime';
 
-const mockTimes = Array.from({ length: 50 }, (_, index) => ({
+const Times = Array.from({ length: 50 }, (_, index) => ({
   id: index + 1,
   time: `${String(index % 24).padStart(2, '0')}:00`,
   status: index % 2 === 0 ? 'Available' : 'Reserved',
@@ -12,8 +12,8 @@ const TimeManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
 
-  const totalPages = Math.ceil(mockTimes.length / rowsPerPage);
-  const displayedTimes = mockTimes.slice(
+  const totalPages = Math.ceil(Times.length / rowsPerPage);
+  const displayedTimes = Times.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
   );
