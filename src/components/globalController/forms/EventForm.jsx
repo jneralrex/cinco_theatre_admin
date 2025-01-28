@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
 import { useDispatch, useSelector } from "react-redux";
-import { createEvent } from "../../../redux/slices/eventSlice";
+import { createEvent, getEvents } from "../../../redux/slices/eventSlice";
 import { getAllLocation } from "../../../redux/slices/locationSlice";
 
 const EventForm = () => {
@@ -47,7 +47,7 @@ useEffect(() => {
       payload.append(key, formData[key]);
     });
 
-    dispatch(createEvent({ eventId: encryptId(eventId._id), eventData: payload }))
+    dispatch(createEvent( payload))
       .unwrap()
       .then(() => {
         setFormData({
@@ -60,6 +60,8 @@ useEffect(() => {
           currency: "",
           location: "",
         });
+        setAddEvent("")
+         dispatch(getEvents())
       })
       .catch((err) => {
         console.error(err);

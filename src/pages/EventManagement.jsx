@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AddEvent from "../components/globalController/triggers/AddEvent";
-import { getEvents, vieweEvent } from "../redux/slices/eventSlice";
+import { deleteEvent, getEvents, vieweEvent } from "../redux/slices/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { encryptId } from "../utils/Crypto";
 import SingleEvent from "../components/globalController/SingleEvent";
@@ -80,10 +80,9 @@ const EventManagement = () => {
       true,
       () => {
         const encryptedId = encryptId(eventId);
-        dispatch(deleteAds({ eventId: encryptedId }))
-          .unwrap()
+        dispatch(deleteEvent({ eventId: encryptedId }))
           .then(() => {
-            dispatch(getAllAds());
+            dispatch(getEvents());
             showSnackbar("Event deleted successfully!", "success");
           })
           .catch((error) => {

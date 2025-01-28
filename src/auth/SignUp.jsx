@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/images/cinco-logo.png";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signUpWebAdmin } from "../redux/slices/adminSlice";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.admin);
-
+  const dispatch = useDispatch();
   const [regWebAdmin, setWebAdmin] = useState({
     username: "",
     email: "",
@@ -25,7 +25,7 @@ const SignUp = () => {
  
   const register = (e) => {
     e.preventDefault();
-    if (!signInAdmin.username || !signInAdmin.email || !signInAdmin.phoneNumber || !signInAdmin.password) {
+    if (!regWebAdmin.username || !regWebAdmin.email || !regWebAdmin.phoneNumber || !regWebAdmin.password) {
       alert("Fields cannot be empty");
       return;
     }
