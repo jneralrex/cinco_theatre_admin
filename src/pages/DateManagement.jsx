@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AddDate from '../components/globalController/triggers/AddDate';
 
-const mockDates = Array.from({ length: 50 }, (_, index) => ({
+const Dates = Array.from({ length: 50 }, (_, index) => ({
   id: index + 1,
   date: `2025-01-${String(index + 1).padStart(2, '0')}`,
   status: index % 2 === 0 ? 'Available' : 'Booked',
@@ -12,8 +12,8 @@ const DateManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
 
-    const totalPages = Math.ceil(mockDates.length / rowsPerPage);
-    const displayedDates = mockDates.slice(
+    const totalPages = Math.ceil(Dates.length / rowsPerPage);
+    const displayedDates = Dates.slice(
       (currentPage - 1) * rowsPerPage,
       currentPage * rowsPerPage
     );
