@@ -29,6 +29,8 @@ import VerifyOtp from "./auth/VerifyOtp";
 import ResendOtp from "./auth/ResendOtp";
 import ForgotPassword from "./auth/ForgotPassword";
 import RecoverPassword from "./auth/RecoverPassword";
+import DateManagement from "./pages/DateManagement";
+import TimeManagement from "./pages/TimeManagement";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,6 +46,8 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/event-management" element={<EventManagement />} />
+        <Route path="/date-management" element={<DateManagement />} />
+        <Route path="/time-management" element={<TimeManagement />} />
         <Route path="/class" element={<ClassManagement />} />
         <Route path="/movie-management" element={<MovieManagement />} />
         <Route path="/row-management" element={<SeatingRowManagement />} />

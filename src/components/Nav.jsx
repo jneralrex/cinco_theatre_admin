@@ -15,6 +15,8 @@ import { MdEventSeat } from "react-icons/md";
 import { RxRows } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../redux/slices/adminSlice";
+import { BsFillCalendar2DateFill } from "react-icons/bs";
+import { IoTimeOutline } from "react-icons/io5";
 
 const Nav = () => {
  const dispatch = useDispatch();
@@ -44,6 +46,8 @@ const Nav = () => {
     { icon: <MdEvent />, label: "Event management", path: "/event-management" },
     { icon: <BiCameraMovie />, label: "Movie management", path: "/movie-management" },
     { icon: <MdFlightClass />, label: "Class management", path: "/class" },
+    { icon:<BsFillCalendar2DateFill />, label: "Date management", path: "/date-management" },
+    { icon:<IoTimeOutline />, label: "Time management", path: "/time-management" },
     { icon: [<MdEventSeat />, <MdBlock className="text-red-500"/>, ], label: "Seat blocking/unblocking", path: "/seat-blocking" },
     { icon: [<MdEventSeat />, <RxRows className="text-black"/>, ], label: "Seat row management", path: "/row-management" },
     { icon: <MdFitScreen />, label: "Screen Management", path: "/screen-ctrl" },
@@ -55,6 +59,7 @@ const Nav = () => {
     { icon: <PiTelevisionSimpleThin />, label: "Ads", path: "/ads" },
     { icon: <FaPen />, label: "Report", path: "/report" },
     { icon: <CiSettings />, label: "General Settings", path: "/settings" },
+    
   ];
 
   return (
