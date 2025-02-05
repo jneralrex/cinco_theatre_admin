@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/images/cinco-logo.png";
-import Api from "../utils/AxiosInstance";
+import { useSelector } from "react-redux";
+import { signUpWebAdmin } from "../redux/slices/adminSlice";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.admin);
 
   const [regWebAdmin, setWebAdmin] = useState({
     username: "",
@@ -14,30 +16,24 @@ const SignUp = () => {
     profilePhoto: "",
     password: "",
   });
-  const [response, setResponse] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  
 
   const handleInput = (e) => {
     setWebAdmin({ ...regWebAdmin, [e.target.name]: e.target.value });
   };
 
-  const register = async (e) => {
+ 
+  const register = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const res = await Api.post(`/auth/web-admin/signup`, regWebAdmin);
-      console.log(res);
-      navigate("/otp");
-    } catch (error) {
-      setError(
-        error.response?.data?.message || "An error occurred. Please try again."
-      );
-      setSignInAdmin({ usernameOrEmail: "", password: "" });
-    } finally {
-      setLoading(false);
+    if (!signInAdmin.username || !signInAdmin.email || !signInAdmin.phoneNumber || !signInAdmin.password) {
+      alert("Fields cannot be empty");
+      return;
     }
+    dispatch(signUpWebAdmin(regWebAdmin)).then((action) => {
+      if (action.type === "admin/signUpWebAdmin/fulfilled") {
+        navigate("/otp");
+      }
+    });
   };
   console.log(regWebAdmin);
   return (

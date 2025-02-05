@@ -1,29 +1,128 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddEvent from "../components/globalController/triggers/AddEvent";
-const mockUsers = Array.from({ length: 50 }, (_, index) => ({
-  id: index + 1,
-  name: `User ${index + 1}`,
-  email: `user${index + 1}@example.com`,
-  phone: `123-456-789${index % 10}`,
-}));
+import { getEvents, vieweEvent } from "../redux/slices/eventSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { encryptId } from "../utils/Crypto";
+import SingleEvent from "../components/globalController/SingleEvent";
+import EditEvent from "../components/globalController/forms/EditEvent";
+import Snackbar from "../components/globalController/triggers/Snackbar";
 
 const EventManagement = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const { loading, events, error } = useSelector((state) => state.events);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewEventDetails, setViewEventDetails] = useState(null);
 
-  const totalPages = Math.ceil(mockUsers.length / rowsPerPage);
-  const displayedUsers = mockUsers.slice(
-    (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
-  );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getEvents());
+  }, [dispatch]);
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  const [snackbar, setSnackbar] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+    isConfirmation: false,
+    onConfirm: null,
+    onCancel: null,
+  });
+
+  const showSnackbar = (
+    message,
+    type = "info",
+    isConfirmation = false,
+    onConfirm = null,
+    onCancel = null
+  ) => {
+    setSnackbar({
+      isOpen: true,
+      message,
+      type,
+      isConfirmation,
+      onConfirm,
+      onCancel,
+    });
   };
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  const handleViewEvent = (eventId) => {
+    const encryptedId = encryptId(eventId);
+    dispatch(vieweEvent({ eventId: encryptedId }))
+      .unwrap()
+      .then((eventDetails) => {
+        setViewEventDetails(eventDetails);
+        setIsViewModalOpen(true);
+      })
+      .catch((err) => {
+        console.error("Error viewing user:", err);
+      });
   };
+
+  const handleEditEvent = (event) => {
+    showSnackbar(
+      "Are you sure you want to edit this event?",
+      "warning",
+      true,
+      () => {
+        setSelectedEvent(event);
+        setIsEditModalOpen(true);
+      },
+      () => {
+        showSnackbar("Edit canceled.", "info");
+      }
+    );
+  };
+
+  const handleDeleteEvent = (eventId) => {
+    showSnackbar(
+      "Are you sure you want to delete this Event?",
+      "warning",
+      true,
+      () => {
+        const encryptedId = encryptId(eventId);
+        dispatch(deleteAds({ eventId: encryptedId }))
+          .unwrap()
+          .then(() => {
+            dispatch(getAllAds());
+            showSnackbar("Event deleted successfully!", "success");
+          })
+          .catch((error) => {
+            console.error(error);
+            showSnackbar("Failed to delete event.", "error");
+          });
+      },
+      () => {
+        showSnackbar("Deletion canceled.", "info");
+      }
+    );
+  };
+
+  const handleAction = (action, event) => {
+    switch (action) {
+      case "edit":
+        handleEditEvent(event);
+        break;
+      case "delete":
+        handleDeleteEvent(event._id);
+        break;
+      case "view":
+        handleViewEvent(event._id);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const closeViewModal = () => {
+    setIsViewModalOpen(false);
+    setViewEventDetails(null);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedEvent(null);
+  };
+
   return (
     <div className="max-h-screen w-full  pt-2 pb-20 lg:pb-20">
       <div className="flex flex-row items-center justify-between w-[90%] m-auto">
@@ -32,51 +131,75 @@ const EventManagement = () => {
           Event Management
         </div>
       </div>
-      <table className="w-[90%] m-auto text-center border border-gray-300 shadow-sm">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="p-2 border">Name</th>
-            <th className="p-2 border">Email</th>
-            <th className="p-2 border">Phone</th>
-            <th className="p-2 border"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {displayedUsers.map((user) => (
-            <tr key={user.id} className="hover:bg-gray-100">
-              <td className="p-2 border">{user.name}</td>
-              <td className="p-2 border">{user.email}</td>
-              <td className="p-2 border">{user.phone}</td>
-              <td className="p-2 border">
-                <select className="border p-1">
-                <option value="">action</option>
-                  <option value="">Edit</option>
-                  <option value="">Delete</option>
-                </select>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="flex justify-between items-center w-[90%] m-auto mt-4">
-        <button
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
-        >
-          Next
-        </button>
-      </div>
+      {loading ? (
+        <p className="text-center">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">Error: {error}</p>
+      ) : events && events.length > 0 ? (
+        <>
+          <table className="w-[90%] m-auto text-center border border-gray-300 shadow-sm">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="p-2 border">Event name</th>
+                <th className="p-2 border">Host name </th>
+                <th className="p-2 border">Date</th>
+                <th className="p-2 border">Time</th>
+
+                <th className="p-2 border"></th>
+              </tr>
+            </thead>
+            {events.map((event) => (
+              <tr
+                key={event._id}
+                className="hover:bg-gray-100 text-[12px] md:text-[14px]"
+              >
+                <td className="p-2 border">{event.eventName}</td>
+                <td className="p-2 border">{event.eventHost}</td>
+                <td className="p-2 border">
+                  {new Date(event.eventDate).toLocaleDateString()}
+                </td>
+                <td className="p-2 border">{event.eventTime}</td>
+                <td className="p-2 border">
+                  <select
+                    className="border p-1"
+                    onChange={(e) => {
+                      const action = e.target.value;
+                      if (!action) return;
+                      handleAction(action, event);
+                      e.target.value = "";
+                    }}
+                  >
+                    <option value="">Action</option>
+                    <option value="edit">Edit</option>
+                    <option value="delete">Delete</option>
+                    <option value="view">View</option>
+                  </select>
+                </td>
+              </tr>
+            ))}
+          </table>
+        </>
+      ) : (
+        <p className="text-center">No events available.</p>
+      )}
+      <EditEvent
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        event={selectedEvent}
+      />
+      {isViewModalOpen && viewEventDetails && (
+        <SingleEvent event={viewEventDetails} onClose={closeViewModal} />
+      )}
+
+      <Snackbar
+        message={snackbar.message}
+        type={snackbar.type}
+        isOpen={snackbar.isOpen}
+        onClose={() => setSnackbar((prev) => ({ ...prev, isOpen: false }))}
+        onConfirm={snackbar.onConfirm}
+        onCancel={snackbar.onCancel}
+        isConfirmation={snackbar.isConfirmation}
+      />
     </div>
   );
 };

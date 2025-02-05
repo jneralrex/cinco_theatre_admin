@@ -1,10 +1,13 @@
 import React, { useContext, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
+import axios from "axios";
+import Api from "../../../utils/AxiosInstance";
 
 const MoviesForm = () => {
   const { addMovie, setAddMovie } = useContext(GlobalController);
 
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     trailer: '',
@@ -28,7 +31,6 @@ const MoviesForm = () => {
       ...prev,
       [name]: type === 'file' ? files[0] : value,
     }));
-  
     // console.log(`${name}: ${type === 'file' ? files[0]?.name : value}`);
   };
 
@@ -37,7 +39,6 @@ const MoviesForm = () => {
     const updatedArray = [...formData[field]];
     updatedArray[index] = value;
     setFormData({ ...formData, [field]: updatedArray });
-
     // console.log(`Updated ${field}[${index}]:`, value);
   };
 
@@ -59,11 +60,37 @@ const MoviesForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const { title, trailer, thumbnail, banner, duration, parentalGuidance, date_release, genre, language, description, tags, cast, crew } = formData;
+    if(!title || !trailer || !thumbnail || !banner || !duration || !parentalGuidance || !date_release || !description || genre[0]=== '' || language[0] === '' || tags[0]=== ''){
+      setError("Please fill in all fields")
+      return
+    }
     console.log(formData);
-    // Add your submission logic here (e.g., API call)
+    const data = new FormData();
+    data.append('title', formData.title);
+    data.append('trailer', formData.trailer);
+    data.append('thumbnail', formData.thumbnail);
+    data.append('banner', formData.banner);
+    data.append('duration', formData.duration);
+    data.append('genre', formData.genre);
+    data.append('language', formData.language);
+    data.append('parentalGuidance', formData.parentalGuidance);
+    data.append('date_release', formData.date_release);
+    data.append('description', formData.description);
+    data.append('tags', formData.tags);
+    data.append('cast', JSON.stringify(formData.cast));
+    data.append('crew', JSON.stringify(formData.crew));
+    console.log(data)
+    try {
+      const response = await Api.post('movies/new', data);
+      console.log(response)
+    } catch (error) {
+      console.log(error.message)
+    }
   };
+  // console.log(formData);
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
@@ -79,6 +106,7 @@ const MoviesForm = () => {
 
         {/* Form */}
         <h2 className="text-xl font-bold text-center mb-4">Add New Movie</h2>
+        {error? <p className='shadow text-sm mb-2 shadow-red-500 px-2 text-red-500'>{error}</p> : null}
         <div className="h-[500px] overflow-y-auto">
           <form onSubmit={handleSubmit}>
             <div className="grid lg:grid-cols-2 gap-3 mb-4">
@@ -151,7 +179,6 @@ const MoviesForm = () => {
                   value={formData.parentalGuidance}
                   onChange={handleChange}
                   className="input input-bordered w-full"
-                  required
                 />
               </div>
               {/* Release Date */}
@@ -163,7 +190,6 @@ const MoviesForm = () => {
                   value={formData.date_release}
                   onChange={handleChange}
                   className="input input-bordered w-full"
-                  required
                 />
               </div>
             </div>
@@ -176,7 +202,6 @@ const MoviesForm = () => {
                 onChange={handleChange}
                 className="textarea textarea-bordered w-full"
                 rows="4"
-                required
               ></textarea>
             </div>
             {/* Genre */}

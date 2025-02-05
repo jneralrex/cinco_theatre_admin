@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import AddEvent from "../components/globalController/triggers/AddEvent";
 import AddClass from '../components/globalController/triggers/AddClass';
 const mockUsers = Array.from({ length: 50 }, (_, index) => ({
   id: index + 1,

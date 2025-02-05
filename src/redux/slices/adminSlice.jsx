@@ -19,6 +19,30 @@ export const loggWebAdmin = createAsyncThunk(
   }
 );
 
+export const signUpWebAdmin = createAsyncThunk(
+  'admin/signUpWebAdmin',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const res = await Api.post(`/auth/signup`, credentials,{ withCredentials: true });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const logOut = createAsyncThunk(
+  'admin/logOut',
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const res = await Api.post(`/auth/signout`, credentials,{ withCredentials: true });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const webAdminSlice = createSlice({
   name: "web-admin",
   initialState, 
@@ -38,7 +62,33 @@ const webAdminSlice = createSlice({
         state.loading = false;
         state.admin = '';
         state.error = action.payload; 
-      });
+      })
+      .addCase(signUpWebAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = ""; 
+      })
+      .addCase(signUpWebAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(signUpWebAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.admin = '';
+        state.error = action.payload; 
+      })
+      .addCase(logOut.pending, (state) => {
+        state.loading = true;
+        state.error = ""; 
+      })
+      .addCase(logOut.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = "";
+      })
+      .addCase(logOut.rejected, (state, action) => {
+        state.loading = false;
+        state.admin = '';
+        state.error = action.payload; 
+      })
   },
 });
 
