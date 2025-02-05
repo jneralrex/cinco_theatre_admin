@@ -56,15 +56,11 @@ const ClassForm = () => {
     if (formValidate()){
         try {
             const resp = await Api.post(`class/classes`,newClass);
-            // const resp = await axios.post("http://localhost:5000/api/v1/class/classes", newClass)
             // console.log(resp); 
             if(resp.status === 201){
-              alert("class created successfully")
               console.log(resp.data.classes);
             }
-            if(resp.status === 403){
-              alert("class already exist")
-            }
+            window.location.reload()
         } catch (error) {
             console.log(error.message);   
         }
