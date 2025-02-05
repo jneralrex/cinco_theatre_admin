@@ -9,14 +9,18 @@ import Snackbar from "../components/globalController/triggers/Snackbar";
 
 const EventManagement = () => {
   const { loading, events, error } = useSelector((state) => state.events);
+    const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
+  
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewEventDetails, setViewEventDetails] = useState(null);
 
+  console.log(loggedAdmin)
+
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getEvents());
+    dispatch(getEvents(loggedAdmin));
   }, [dispatch]);
 
   const [snackbar, setSnackbar] = useState({

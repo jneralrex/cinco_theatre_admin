@@ -18,7 +18,7 @@ import { logOut } from "../redux/slices/adminSlice";
 
 const Nav = () => {
  const dispatch = useDispatch();
-  const  loggedAdmin = useSelector((state) => state.admin.admin);
+  const  loggedAdmin = useSelector((state) => state.theatre.theatre);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -69,7 +69,7 @@ const Nav = () => {
             </button>
           </div>
           <div className=" ml-10 lg:block mt-auto p-2 lg:ml-0 border-purple-600 lg:bg-purple-700 fixed top-0 w-[262px] z-20 text-white">
-           {loggedAdmin?.user?.username}
+           {loggedAdmin?.theatre?.theatreName}
           </div>
       </div>
       <div className="flex flex-col lg:flex-row justify-between max-h-screen bg-gray-50">

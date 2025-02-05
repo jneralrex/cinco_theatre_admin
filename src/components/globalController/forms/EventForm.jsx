@@ -9,11 +9,9 @@ const EventForm = () => {
   const { addEvent, setAddEvent } = useContext(GlobalController);
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.events);
-  const {
-    loading: locationLoading,
-    error: locationError,
-    locations = [],
-  } = useSelector((state) => state.locations);
+  const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
+
+  
 
   const [formData, setFormData] = useState({
     eventName: "",
@@ -23,7 +21,6 @@ const EventForm = () => {
     eventDate: "",
     eventTime: "",
     currency: "",
-    location: "",
   });
 
 useEffect(() => {
@@ -47,7 +44,7 @@ useEffect(() => {
       payload.append(key, formData[key]);
     });
 
-    dispatch(createEvent( payload))
+    dispatch(createEvent({payload, loggedAdmin}))
       .unwrap()
       .then(() => {
         setFormData({
@@ -58,7 +55,6 @@ useEffect(() => {
           eventDate: "",
           eventTime: "",
           currency: "",
-          location: "",
         });
         setAddEvent("")
          dispatch(getEvents())
@@ -90,36 +86,6 @@ useEffect(() => {
           <p className="text-center text-red-500">Error: {error}</p>
         ) : null}
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          {locationLoading ? (
-            <p className="text-center">Loading locations...</p>
-          ) : locations.length > 0 ? (
-            <select
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleInput}
-              required
-              className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="" disabled>
-                Choose a location
-              </option>
-              {locations.map((state) =>
-                state.location.map((loc) =>
-                  loc.cities.map((city) => (
-                    <option
-                      key={`${loc.state}-${city.city}`}
-                      value={state._id}
-                    >
-                      {`${loc.state}, ${city.city}, ${city.street}`}
-                    </option>
-                  ))
-                )
-              )}
-            </select>
-          ) : (
-            <p className="text-center">No locations available.</p>
-          )}
 
           
           <input
