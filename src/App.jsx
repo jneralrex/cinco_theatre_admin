@@ -24,11 +24,15 @@ import Report from "./pages/Report";
 import ScreenManagement from "./pages/ScreenManagement";
 import ClassManagement from "./pages/ClassManagement";
 import SeatBlockingManagement from "./pages/SeatBlockingManagement";
-import SeatingRowManagement from "./pages/SeatingRowManagement";
 import VerifyOtp from "./auth/VerifyOtp";
 import ResendOtp from "./auth/ResendOtp";
 import ForgotPassword from "./auth/ForgotPassword";
 import RecoverPassword from "./auth/RecoverPassword";
+import Classdetail from "./pages/Classdetail";
+import SeatingManagement from "./pages/SeatingManagement";
+import Seatdetail from "./pages/Seatdetail";
+import RowManagement from "./pages/RowManagement";
+import Rowdetail from "./pages/RowDetails";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,8 +49,12 @@ const router = createBrowserRouter(
         <Route path="/user-management" element={<UserManagement />} />
         <Route path="/event-management" element={<EventManagement />} />
         <Route path="/class" element={<ClassManagement />} />
+        <Route path="/class-detail/:id" element={<Classdetail />} />
         <Route path="/movie-management" element={<MovieManagement />} />
-        <Route path="/row-management" element={<SeatingRowManagement />} />
+        <Route path="/seat-management" element={<SeatingManagement />} />
+        <Route path="/seat-detail/:id" element={<Seatdetail />} />
+        <Route path="/row-management" element={<RowManagement />} />
+        <Route path="/row-detail/:id" element={<Rowdetail />} />
         <Route path="/movie-management" element={<MovieManagement />} />
         <Route path="/seat-blocking" element={<SeatBlockingManagement />} />
         <Route path="/theatre-admin" element={<TheatreAdminManagement />} />
