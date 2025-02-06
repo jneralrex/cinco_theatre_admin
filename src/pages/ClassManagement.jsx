@@ -41,7 +41,6 @@ const ClassManagement = () => {
     const getClass= async ()=>{
       try {
          const resp = await Api.get(`class/classes`);
-        
         if(resp.status === 200){
             setAllClasses(resp.data)
           }
@@ -49,7 +48,6 @@ const ClassManagement = () => {
           console.log(error.message); 
         }
       }
-      
       useEffect (()=>{
       getClass()
     },[])

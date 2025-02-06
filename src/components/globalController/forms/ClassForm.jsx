@@ -11,13 +11,15 @@ const ClassForm = () => {
     className:"",
     numberOfRows:"",
     price:"",
-    availability:""
+    availability:"",
+    theatre:""
   })
   const [newClassError, setNewClassError]=useState({
     className:"",
     numberOfRows:"",
     price:"",
-    availability:""
+    availability:"",
+    theatre:""
   })
 
   const handleChange = (e) => {
@@ -43,6 +45,9 @@ const ClassForm = () => {
       }
       if(newClass.availability ===""){
         newError.availability="This is required"
+      }
+      if(newClass.theatre ===""){
+        newError.theatre="This is required"
       }
       
 
