@@ -11,9 +11,9 @@ const initialState = {
 
 export const getAllScreen = createAsyncThunk(
   "screens/getAllScreen",
-  async (_, { rejectWithValue }) => {
+  async (loggedAdmin, { rejectWithValue }) => {
     try {
-      const res = await Api.get(`screen/all-screens`);
+      const res = await Api.get(`screen/screens/${loggedAdmin}`);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -23,9 +23,9 @@ export const getAllScreen = createAsyncThunk(
 
 export const createScreen = createAsyncThunk(
   "screens/createScreen",
-  async (credentials, { rejectWithValue }) => {
+  async ({loggedAdmin, createNewScreen}, { rejectWithValue }) => {
     try {
-      const res = await Api.post(`screen/create-screen`, credentials);
+      const res = await Api.post(`screen/theatre/${loggedAdmin}/screen`, createNewScreen);
       console.log(res.data);
       if (Array.isArray(res.data)) {
         return res.data;
@@ -40,12 +40,11 @@ export const createScreen = createAsyncThunk(
 
 export const editScreen = createAsyncThunk(
   "screens/editScreen",
-  async ({ screenId, screenData }, { rejectWithValue }) => {
+  async ({ screenId, screenData, loggedAdmin }, { rejectWithValue }) => {
     try {
       const decryptedId = decryptId(screenId);
       console.log(decryptedId);
-      const res = await Api.put(
-        `screen/edit-screen/${decryptedId}`,
+      const res = await Api.patch(`screen/theatre/${loggedAdmin}/screen/${decryptedId}`,
         screenData
       );
       return res.data;
@@ -62,7 +61,7 @@ export const deleteScreen = createAsyncThunk(
   async ({screenId}, { rejectWithValue }) => {
     try {
       const decryptedId = decryptId(screenId);
-      await Api.delete(`screen/delete-screen/${decryptedId}`);
+      await Api.delete(`screen/screen/${decryptedId}`);
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Something occurred, please try again"

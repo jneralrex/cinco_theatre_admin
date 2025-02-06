@@ -7,10 +7,10 @@ import { loggWebAdmin } from "../redux/slices/adminSlice";
 const SignIn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.admin);
+  const { loading, error } = useSelector((state) => state.theatre);
 
   const [signInAdmin, setSignInAdmin] = useState({
-    usernameOrEmail: "",
+    theatreNameOrtheatreEmail: "",
     password: "",
   });
 
@@ -20,7 +20,7 @@ const SignIn = () => {
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    if (!signInAdmin.usernameOrEmail || !signInAdmin.password) {
+    if (!signInAdmin.theatreNameOrtheatreEmail || !signInAdmin.password) {
       alert("Fields cannot be empty");
       return;
     }
@@ -43,10 +43,10 @@ const SignIn = () => {
           <label>
             <input
               type="text"
-              name="usernameOrEmail"
+              name="theatreNameOrtheatreEmail"
               className="w-full border rounded-lg p-2"
               placeholder="Name or Email"
-              value={signInAdmin.usernameOrEmail}
+              value={signInAdmin.theatreNameOrtheatreEmail}
               onChange={handleInput}
             />
           </label>

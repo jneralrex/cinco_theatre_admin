@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdCancel } from "react-icons/md";
 import { editScreen, getAllScreen } from "../../../redux/slices/ScreenSlice";
 import { encryptId } from "../../../utils/Crypto";
@@ -11,7 +11,9 @@ const EditScreen = ({ isOpen, onClose, screen }) => {
     screenCapacity: "",
     screenType: "",
   });
-
+  const loggedAdmin = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
   useEffect(() => {
     if (screen) {
       setFormData({
@@ -37,7 +39,7 @@ const EditScreen = ({ isOpen, onClose, screen }) => {
       return;
     }
     dispatch(
-      editScreen({ screenId: encryptId(screen._id), screenData: formData })
+      editScreen({ screenId: encryptId(screen._id), screenData: formData, loggedAdmin })
     )
       .unwrap()
       .then(() => {

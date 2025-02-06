@@ -11,9 +11,9 @@ const initialState = {
 
 export const createEvent = createAsyncThunk(
   "events/createEvent",
-  async (credentials, { rejectWithValue }) => {
+  async ({payload, loggedAdmin}, { rejectWithValue }) => {
     try {
-      const res = await Api.post("event/create-events", credentials);
+      const res = await Api.post(`event/create-event/${loggedAdmin}`, payload);
       console.log("response", res);
       return res.data;
     } catch (error) {
@@ -46,7 +46,6 @@ export const deleteEvent = createAsyncThunk(
     try {
       const decryptedId = decryptId(eventId);
       await Api.delete(`event/delete-event/${decryptedId}`);
-      return res.data.event;
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Something occurred, please try again"
@@ -57,9 +56,9 @@ export const deleteEvent = createAsyncThunk(
 
 export const getEvents = createAsyncThunk(
   "events/getEvents",
-  async (_, { rejectWithValue }) => {
+  async (loggedAdmin , { rejectWithValue }) => {
     try {
-      const res = await Api.get("event/events");
+      const res = await Api.get(`event/events/${loggedAdmin}`);
       if (Array.isArray(res.data.events)) {
         return res.data.events;
       }
@@ -74,10 +73,10 @@ export const getEvents = createAsyncThunk(
 
 export const editEvent = createAsyncThunk(
   "events/editEvent",
-  async ({ eventId, eventData }, { rejectWithValue }) => {
+  async ({ eventId, eventData, loggedAdmin }, { rejectWithValue }) => {
     try {
       const decryptedId = decryptId(eventId);
-      const res = await Api.patch(`event/edit-event/${decryptedId}`, eventData);
+      const res = await Api.patch(`event/edit-event/${decryptedId}/${loggedAdmin}`, eventData);
       console.log("event",res.data.event)
       return res.data.event;
     } catch (error) {
@@ -102,7 +101,8 @@ const eventSlice = createSlice({
       .addCase(createEvent.fulfilled, (state, action) => {
         state.loading = false;
         state.error = "";
-      })
+        state.events.push(action.payload);
+      })      
       .addCase(createEvent.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
