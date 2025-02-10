@@ -12,6 +12,8 @@ const EditEvent = ({ isOpen, onClose, event }) => {
         error: locationError,
         locations = [],
     } = useSelector((state) => state.locations);
+    const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
+    
 
     const dispatch = useDispatch();
 
@@ -62,7 +64,7 @@ const EditEvent = ({ isOpen, onClose, event }) => {
             payload.append(key, formData[key]);
         });
 
-        dispatch(editEvent({ eventId: encryptId(event._id), eventData: payload }))
+        dispatch(editEvent({ eventId: encryptId(event._id), eventData: payload, loggedAdmin }))
             .unwrap()
             .then(() => {
                 console.log({
@@ -122,39 +124,6 @@ const EditEvent = ({ isOpen, onClose, event }) => {
                         </div>
                     )}
 
-                    <div>
-                        <label htmlFor="location" className="font-semibold">
-                            Select New Location
-                        </label>
-                        {locationLoading ? (
-                            <p className="text-center">Loading locations...</p>
-                        ) : locations.length > 0 ? (
-                            <select
-                                id="location"
-                                name="location"
-                                value={formData.location}
-                                onChange={handleInput}
-                                required
-                                className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-                            >
-                                <option value="" disabled>
-                                    Choose a location
-                                </option>
-                                {locations.map((state) =>
-                                    state.location.map((loc) =>
-                                        loc.cities.map((city) => (
-                                            <option key={`${state._id}-${loc.state}-${city.city}`} value={state._id}>
-                                                {`${loc.state}, ${city.city}, ${city.street}`}
-                                            </option>
-                                        ))
-                                    )
-                                )
-                                }
-                            </select>
-                        ) : (
-                            <p className="text-center">No locations available.</p>
-                        )}
-                    </div>
 
                     <input
                         type="text"

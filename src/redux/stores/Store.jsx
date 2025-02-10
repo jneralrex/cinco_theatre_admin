@@ -22,12 +22,12 @@ const logger = createLogger({
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["admin", "users"], // Reducers you want to persist
+  whitelist: ["theatre", "users"], // Reducers you want to persist
 };
 
 // Combine reducers
 const rootReducer = combineReducers({
-  admin: adminReducer,
+  theatre: adminReducer,
   users: usersReducer,
   theatreAdmins: theatreAdminsReducer,
   locations:locationReducer,

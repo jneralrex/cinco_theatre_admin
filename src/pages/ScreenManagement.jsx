@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import AddScreen from "../components/globalController/triggers/AddScreen";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteScreen, getAllScreen, viewSingleScreen } from "../redux/slices/ScreenSlice";
+import {
+  deleteScreen,
+  getAllScreen,
+  viewSingleScreen,
+} from "../redux/slices/ScreenSlice";
 import EditScreen from "../components/globalController/forms/EditScreen";
 import { encryptId } from "../utils/Crypto";
 import SingleScreen from "../components/globalController/SingleScreen";
@@ -9,13 +13,16 @@ import SingleScreen from "../components/globalController/SingleScreen";
 const ScreenManagement = () => {
   const dispatch = useDispatch();
   const { loading, screens, error } = useSelector((state) => state.screens);
+  const loggedAdmin = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
   const [selectedScreen, setSelectedScreen] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-const [isViewModalOpen, setIsViewModalOpen] = useState(false); 
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewScreenDetails, setViewScreenDetails] = useState(null);
 
   useEffect(() => {
-    dispatch(getAllScreen());
+    dispatch(getAllScreen(loggedAdmin));
   }, [dispatch]);
 
   const handleEditScreen = (screen) => {
@@ -50,8 +57,8 @@ const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     dispatch(viewSingleScreen({ screenId: encryptedId }))
       .unwrap()
       .then((screenDetails) => {
-        setViewScreenDetails(screenDetails); 
-        setIsViewModalOpen(true); 
+        setViewScreenDetails(screenDetails);
+        setIsViewModalOpen(true);
       })
       .catch((err) => {
         console.error("Error viewing user:", err);
@@ -136,12 +143,9 @@ const [isViewModalOpen, setIsViewModalOpen] = useState(false);
         onClose={closeEditModal}
         screen={selectedScreen}
       />
-        {isViewModalOpen && viewScreenDetails && (
-            <SingleScreen
-              screen={viewScreenDetails}
-              onClose={closeViewModal}
-            />
-          )}
+      {isViewModalOpen && viewScreenDetails && (
+        <SingleScreen screen={viewScreenDetails} onClose={closeViewModal} />
+      )}
     </div>
   );
 };

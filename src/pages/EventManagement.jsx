@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AddEvent from "../components/globalController/triggers/AddEvent";
-import { getEvents, vieweEvent } from "../redux/slices/eventSlice";
+import { deleteEvent, getEvents, vieweEvent } from "../redux/slices/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { encryptId } from "../utils/Crypto";
 import SingleEvent from "../components/globalController/SingleEvent";
@@ -9,14 +9,18 @@ import Snackbar from "../components/globalController/triggers/Snackbar";
 
 const EventManagement = () => {
   const { loading, events, error } = useSelector((state) => state.events);
+    const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
+  
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewEventDetails, setViewEventDetails] = useState(null);
 
+  console.log(loggedAdmin)
+
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getEvents());
+    dispatch(getEvents(loggedAdmin));
   }, [dispatch]);
 
   const [snackbar, setSnackbar] = useState({
@@ -80,10 +84,9 @@ const EventManagement = () => {
       true,
       () => {
         const encryptedId = encryptId(eventId);
-        dispatch(deleteAds({ eventId: encryptedId }))
-          .unwrap()
+        dispatch(deleteEvent({ eventId: encryptedId }))
           .then(() => {
-            dispatch(getAllAds());
+            dispatch(getEvents());
             showSnackbar("Event deleted successfully!", "success");
           })
           .catch((error) => {

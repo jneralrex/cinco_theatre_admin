@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createScreen, getAllScreen } from "../../../redux/slices/ScreenSlice";
 
 const ScreenForm = () => {
@@ -12,14 +12,16 @@ const ScreenForm = () => {
     screenType: "",
   });
   const dispatch = useDispatch();
-
+  const loggedAdmin = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
   const handleInput = (e) => {
     setCreateNewScreen({ ...createNewScreen, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createScreen(createNewScreen))
+    dispatch(createScreen({createNewScreen, loggedAdmin}))
       .unwrap()
       .then(() => {
         setCreateNewScreen({
@@ -35,6 +37,7 @@ const ScreenForm = () => {
         console.error(error);
       });
   };
+  console.log(createNewScreen)
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
