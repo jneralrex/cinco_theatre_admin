@@ -33,6 +33,7 @@ import SeatingManagement from "./pages/SeatingManagement";
 import Seatdetail from "./pages/Seatdetail";
 import RowManagement from "./pages/RowManagement";
 import Rowdetail from "./pages/RowDetails";
+import MovieDetailPage from "./pages/MovieDetailPage";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -50,11 +51,11 @@ const router = createBrowserRouter(
         <Route path="/event-management" element={<EventManagement />} />
         <Route path="/class" element={<ClassManagement />} />
         <Route path="/class-detail/:id" element={<Classdetail />} />
-        <Route path="/movie-management" element={<MovieManagement />} />
         <Route path="/seat-management" element={<SeatingManagement />} />
         <Route path="/seat-detail/:id" element={<Seatdetail />} />
         <Route path="/row-management" element={<RowManagement />} />
         <Route path="/row-detail/:id" element={<Rowdetail />} />
+        <Route path="/movie-detail/:id" element={<MovieDetailPage />} />
         <Route path="/movie-management" element={<MovieManagement />} />
         <Route path="/seat-blocking" element={<SeatBlockingManagement />} />
         <Route path="/theatre-admin" element={<TheatreAdminManagement />} />
