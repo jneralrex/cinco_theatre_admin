@@ -3,7 +3,6 @@ import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
 import { useDispatch, useSelector } from "react-redux";
 import { createEvent, getEvents } from "../../../redux/slices/eventSlice";
-import { getAllLocation } from "../../../redux/slices/locationSlice";
 
 const EventForm = () => {
   const { addEvent, setAddEvent } = useContext(GlobalController);

@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MdCancel } from 'react-icons/md';
-import { getAllLocation } from '../../../redux/slices/locationSlice';
 import { editEvent, getEvents } from '../../../redux/slices/eventSlice';
 import { encryptId } from '../../../utils/Crypto';
 
 const EditEvent = ({ isOpen, onClose, event }) => {
     const { loading, error } = useSelector((state) => state.events);
-    const {
-        loading: locationLoading,
-        error: locationError,
-        locations = [],
-    } = useSelector((state) => state.locations);
+  
     const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
     
 
