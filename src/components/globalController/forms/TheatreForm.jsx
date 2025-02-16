@@ -8,7 +8,6 @@ const TheatreForm = () => {
   return (
     <div className="bg-black/40 fixed inset-0 flex justify-center items-center min-h-screen z-50">
       <div className="relative bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
-        {/* Close Button */}
         <button
           aria-label="Close"
           onClick={() => setAddTheatre("")}

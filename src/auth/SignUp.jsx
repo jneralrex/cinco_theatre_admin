@@ -12,7 +12,6 @@ const SignUp = () => {
     username: "",
     email: "",
     phoneNumber: "",
-    role: import.meta.env.VITE_ADMIN_ROLE_NAME,
     profilePhoto: "",
     password: "",
   });
