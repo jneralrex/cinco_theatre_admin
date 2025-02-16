@@ -6,7 +6,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import SignIn from "./auth/SignIn";
-import SignUp from "./auth/SignUp";
 import Nav from "./components/Nav";
 import DashBoard from "./pages/DashBoard";
 import EventManagement from "./pages/EventManagement";
@@ -14,7 +13,6 @@ import MovieManagement from "./pages/MovieManagement";
 import TheatreManagement from "./pages/TheatreManagement";
 import Global from "./components/globalController/Global";
 import Tickets from "./pages/Tickets";
-import News from "./pages/News";
 import GeneralSettings from "./pages/GeneralSettings";
 import Report from "./pages/Report";
 import ScreenManagement from "./pages/ScreenManagement";
@@ -34,7 +32,6 @@ import MovieDetailPage from "./pages/MovieDetailPage";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route path="/sign-up" element={<SignUp />} />
       <Route path="/sign-in" element={<SignIn />} />
       <Route path="/otp" element={<VerifyOtp />} />
       <Route path="/resend-otp" element={<ResendOtp />} />
