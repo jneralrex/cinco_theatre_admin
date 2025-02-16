@@ -90,7 +90,7 @@ const Nav = () => {
         </div>
         {/* Sidebar Navigation */}
         <div
-          className={`w-[280px] h-full flex-col fixed bg-purple-700 text-white transform overflow-y-auto pb-5 pt-10 lg:pb-12 ${
+          className={`w-[280px] h-full flex-col fixed bg-purple-700 z-10 text-white transform overflow-y-auto pb-5 pt-10 lg:pb-12 ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           } lg:translate-x-0 lg:flex transition-transform duration-300 ease-in-out z-10`}
         >

@@ -3,11 +3,13 @@ import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
 import axios from "axios";
 import Api from "../../../utils/AxiosInstance";
+import { useSelector } from "react-redux";
 
-const MoviesForm = () => {
+const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
   const { addMovie, setAddMovie } = useContext(GlobalController);
 
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     trailer: '',
@@ -23,6 +25,13 @@ const MoviesForm = () => {
     cast: [{ name: '', image: '', stage_name: '' }],
     crew: [{ name: '', image: '', stage_name: '' }],
   });
+
+  const loggedAdminTheater = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
+  const loggedAdminCinema = useSelector(
+    (state) => state.theatre?.theatre?.theatre?.theatreCinema    
+  );
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -65,7 +74,7 @@ const MoviesForm = () => {
     const { title, trailer, thumbnail, banner, duration, parentalGuidance, date_release, genre, language, description, tags, cast, crew } = formData;
     if(!title || !trailer || !thumbnail || !banner || !duration || !parentalGuidance || !date_release || !description || genre[0]=== '' || language[0] === '' || tags[0]=== ''){
       setError("Please fill in all fields")
-      return
+      return;
     }
     console.log(formData);
     const data = new FormData();
@@ -82,15 +91,40 @@ const MoviesForm = () => {
     data.append('tags', formData.tags);
     data.append('cast', JSON.stringify(formData.cast));
     data.append('crew', JSON.stringify(formData.crew));
-    console.log(data)
+    data.append('theatre_id', loggedAdminTheater);
+    data.append('cinemaId', loggedAdminCinema);
+    // console.log(data)
+    setLoading(true);
     try {
-      const response = await Api.post('movies/new', data);
-      console.log(response)
+      const response = await axios.post('http://localhost:5000/api/v1/movies/new', data)
+      // const response = await Api.post('movies/new', data);
+      // console.log(response)
+      if(response.status === 201){
+        setLoading(false);
+        closeMovieForm();
+        fetchAllMovieByCinema();
+        setFormData({
+          title: '',
+          trailer: '',
+          thumbnail: '',
+          banner: '',
+          duration: '',
+          genre: [''],
+          language: ['English'],
+          parentalGuidance: '',
+          date_release: '',
+          description: '',
+          tags: [''],
+          cast: [{ name: '', image: '', stage_name: '' }],
+          crew: [{ name: '', image: '', stage_name: '' }],
+        })
+      }
     } catch (error) {
       console.log(error.message)
+    } finally{
+      setLoading(false)
     }
   };
-  // console.log(formData);
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
@@ -340,7 +374,7 @@ const MoviesForm = () => {
               type="submit"
               className="btn btn-primary w-full"
             >
-              Add Movie
+              { loading === true ? 'Please wait...' : 'Add movie'}
             </button>
           </form>
         </div>
