@@ -25,7 +25,7 @@ const MovieDetailPage = () => {
     const singleMovie = async ()=>{
         try {
             const resp = await axios.get(`http://localhost:5000/api/v1/movies/${movieId}`)
-            console.log(resp.data.data)
+            // console.log(resp.data.data)
             if(resp.status === 200){
                 setLoading(false);
                 setMovie(resp.data.data);
@@ -115,9 +115,9 @@ const MovieDetailPage = () => {
                                     })}
                                 </p>
                             </div>
-                            <Link to='/movie-date-time'>
+                            <Link to={`/movie-date-time/${movieId}`}>
                             <div className='bg-purple-800 hover:bg-purple-900 rounded-md text-center font-semibold text-white py-3 cursor-pointer mt-4'>
-                                <p>Movie Date/Time</p>
+                                <p>View streaming Dates and Time</p>
                             </div>
                             </Link>
                         </div>
@@ -581,7 +581,7 @@ const MovieDetailPage = () => {
             </div> 
             <div className='lg:hidden py-2 px-5 bg-white border-t shadow-xl z-5 fixed bottom-0 left-0 right-0'>
                 <Link to='/movie-date-time'>
-                    <button className='w-full bg-purple-800 rounded-lg py-2 text-white'>Movie Date/Time</button>  
+                    <button className='w-full bg-purple-800 rounded-lg py-2 text-white'>Add streaming Dates and Time</button>  
                 </Link>  
             </div>       
         </div>

@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import AddMovie from '../components/globalController/triggers/AddMovie'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from '../components/Skeleton';
 import { useSelector } from 'react-redux';
+import { GlobalController } from '../components/globalController/Global';
+import DateForm from '../components/globalController/forms/DateForm';
 
 const MovieManagement = () => {
+  const { addDate, setAddDate } = useContext(GlobalController);
+
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
   const loggedAdminCinema = useSelector(
@@ -68,6 +72,9 @@ const MovieManagement = () => {
       case "toggleAvailability":
         toggleAvailability(id);
         break;
+      case "add":
+        toggleClassModal();
+        localStorage.setItem("movieId", id);
       default:
         break;
     }
@@ -100,12 +107,26 @@ const MovieManagement = () => {
     }
   };
 
+  const toggleClassModal = () => {
+    setAddDate(!addDate);
+    if (!addDate) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+};
+
+
+
   useEffect(()=>{
     fetchAllMovieByCinema();
   },[]);
 
   return (
     <div className="max-h-screen w-full  pt-2 pb-20 lg:pb-20">
+      {/* date form */}
+      {addDate && <DateForm closeDateForm={toggleClassModal} />}
+
       <div className="flex flex-row items-center justify-between w-[90%] m-auto">
         <AddMovie fetchAllMovieByCinema={fetchAllMovieByCinema}/>
         <div className="text-center text-xl font-bold mb-4">
@@ -147,6 +168,7 @@ const MovieManagement = () => {
                 <td className="p-2 border">
                   <select className="border p-1" onChange={handleChange} defaultValue="">
                     <option value="">Select an option</option>
+                    <option value={`add-${movie._id}`}>Add date & time</option>
                     <option value={`view-${movie._id}`}>View</option>
                     <option value={`toggleAvailability-${movie._id}`}>Toggle-Availability</option>
                     <option value={`edit-${movie._id}`}>Edit</option>
