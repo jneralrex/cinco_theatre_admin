@@ -12,7 +12,7 @@ const Rowdetail = () => {
     const id = params.id
 
     const [singleRow, setSingleRow] = useState({})
-
+    
     const getSingleRow =async()=>{
         try {
             const resp = await Api.get(`row/rows/${id}`)
@@ -34,7 +34,6 @@ const Rowdetail = () => {
             <Link
             to={`/row-management/`}
               aria-label="Close"
-              onClick={() => setAddClass("")}
               className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
             >
               <MdCancel  size={24} />
@@ -48,7 +47,7 @@ const Rowdetail = () => {
                     <div className="flex justify-center items-center min-h-screen mt-[200px]">
                     <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
                         <p className="text-lg font-medium text-gray-700">Row Name: {singleRow.rowName}</p>
-                        <p className="text-lg font-medium text-gray-700">Seat : {singleRow.seatIds}</p>   
+                        <p className="text-lg font-medium text-gray-700">Seat : {singleRow._id}</p>   
                     </div>
                     </div>
                 ) : (
