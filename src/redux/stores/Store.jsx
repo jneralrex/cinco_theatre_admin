@@ -4,11 +4,8 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; 
 import { combineReducers } from "redux";
 import adminReducer from "../slices/adminSlice";
-import usersReducer from "../slices/usersSlice";
 import theatreAdminsReducer from "../slices/TheatreAdminSlice";
-import locationReducer from "../slices/locationSlice";
 import screenReducer from "../slices/ScreenSlice";
-import adsReducer from "../slices/AdsSlice";
 import eventsReducer from "../slices/eventSlice";
 
 
@@ -28,11 +25,8 @@ const persistConfig = {
 // Combine reducers
 const rootReducer = combineReducers({
   theatre: adminReducer,
-  users: usersReducer,
   theatreAdmins: theatreAdminsReducer,
-  locations:locationReducer,
   screens:screenReducer,
-  ads:adsReducer,
   events:eventsReducer,
 
 });

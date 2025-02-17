@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { GlobalController } from '../Global';
 import MoviesForm from '../forms/MoviesForm.jsx';
 
-const AddMovie = () => {
+const AddMovie = ({fetchAllMovieByCinema}) => {
     const {addMovie, setAddMovie} = useContext(GlobalController);
     const toggleMovieModal = () => {
         setAddMovie(!addMovie);
@@ -17,7 +17,7 @@ const AddMovie = () => {
     <button onClick={toggleMovieModal} className='bg-purple-500 p-2 rounded-lg text-white'>
       Add Movie
     </button>
-    {addMovie && <MoviesForm closeMovieForm={toggleMovieModal} />}
+    {addMovie && <MoviesForm closeMovieForm={toggleMovieModal} fetchAllMovieByCinema={fetchAllMovieByCinema} />}
 </div>  )
 } 
 export default AddMovie
