@@ -1,7 +1,9 @@
-import axios, { all } from 'axios';
+
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import Api from '../utils/AxiosInstance';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const RowManagement = () => {
     // handle modal
@@ -11,26 +13,31 @@ const RowManagement = () => {
     const handleOpenModal = () => {
         setOpenModal(true)
     }
-
+    const loggedAdmin = useSelector(
+      (state) => state.theatre?.theatre?.theatre?._id
+    );
     // post row
-    const [row, setRow] = useState ({
-        rowName:"",
-        seatIds: [],
-    })
-    console.log(row);
-    
-    const handleChange = (e) => {
+    const [row, setRow] = useState({
+      rowName: "",
+      seatIds: [],  
+      theatre: loggedAdmin
+  });
+  
+  console.log(row);
+  
+  const handleChange = (e) => {
       const { name, value, options } = e.target;
   
       if (name === "seatIds") {
-          // ✅ Get selected values as an array
-          const selectedSeats = Array.from(options)
-              .filter(option => option.selected)
-              .map(option => option.value);
+          const selectedSeats = options ? 
+              Array.from(options)
+                  .filter(option => option.selected)
+                  .map(option => option.value) 
+              : [];
   
           setRow((prevState) => ({
               ...prevState,
-              seatIds: selectedSeats,
+              seatIds: selectedSeats.length > 0 ? selectedSeats : [] 
           }));
       } else {
           setRow((prevState) => ({
@@ -38,19 +45,29 @@ const RowManagement = () => {
               [name]: value,
           }));
       }
-       console.log(`${name}: ${value}`);
-
+  
+      console.log(`${name}: ${value}`);
   };
-
-      const handleSubmit =async (e)=>{
-        e.preventDefault();
-        try {
-          const resp = await Api.post(`row/rows`,row)
-            console.log(resp);         
-        } catch (error) {
-            console.log(error.response.data.message);
-        }
+  
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+      console.log("Clicked button");
+  
+      try {
+          
+          const payload = {
+              ...row,
+              seatIds: row.seatIds || []  
+          };
+  
+          const resp = await axios.post(`http://localhost:5000/api/v1/row/rows`, payload);
+          console.log(resp);
+          getAllRow();
+      } catch (error) {
+          console.log(error.response?.data?.message || "An error occurred");
       }
+  };
+  
 
       // get all seats for the select field (select)
       const [allseats, setAllSeats] = useState([])
@@ -66,15 +83,16 @@ const RowManagement = () => {
         } catch (error) {
             console.log(error.message);  
         }
-      }
+      };
 
       // get all rows
       const [allRow, setAllRow] = useState([])
-
+      
       const getAllRow = async () => {
         try {
-            const resp = await Api.get(`row/rows`)
-            console.log(resp);
+            // const resp = await Api.get(`row/all-rows/${loggedAdmin}`)
+            const resp = await axios.get(`http://localhost:5000/api/v1/row/all-rows/${loggedAdmin}`);
+            console.log("resp",resp);
             if (Array.isArray(resp.data.data)) {
               setAllRow(resp.data.data);
           } else {
@@ -89,7 +107,7 @@ const RowManagement = () => {
         getAllSeats()
         getAllRow()
       },[]);
-      
+
 
       // delete row
       const [deleteRow, setDeleteRow] = useState({})
@@ -148,9 +166,6 @@ const RowManagement = () => {
       if (!newEditRow.rowName) {
         errors.rowName = "Row name cannot be empty";
       }
-      if (!newEditRow.seatIds) {
-        errors.seatIds = "Seat cannot be empty";
-      }
     
       setFormErrors(errors);
       return Object.keys(errors).length === 0;
@@ -162,8 +177,7 @@ const RowManagement = () => {
       if(validateForms()){
           try {
             const resp = await Api.put(`row/rows/${rowToEdit}`,newEditRow)
-            console.log(resp);
-                      
+            console.log(resp);           
             if(resp.status === 200){
               setEditedRow(newEditRow)
               getAllRow()
@@ -219,7 +233,7 @@ const RowManagement = () => {
                   onClick={handleOpenModal}
                   className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
                   >
-                  All seats
+                  All Rows
                   </button>
               </div>
           </div>
@@ -243,7 +257,7 @@ const RowManagement = () => {
                                   {row.rowName}
                                 </Link>
                               </td>
-                              <td className="p-2 border">{row.seatIds}</td>
+                              <td className="p-2 border">{row._id}</td>
                               <td className="p-2 border">
                                 <select
                                   className="border p-1"
@@ -292,6 +306,7 @@ const RowManagement = () => {
                     </div>
                 </div>
             )}
+            
 
           {isModalEditOpen && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -307,7 +322,7 @@ const RowManagement = () => {
                     </div>
                     <div>
                       <p className='text-[18px] mb-2'>Seat</p>
-                      <select name="seatIds" value={newEditRow.seatIds} id="" className="mt-1 block w-full p-2 border border-gray-300 rounded-md"  onChange={handleEditChange}>
+                      <select name="seatIds" value={newEditRow.seatIds}  id="" className="mt-1 block w-full p-2 border border-gray-300 rounded-md"  onChange={handleEditChange}>
                           <option value="">Select</option>
                           {
                             allseats.map((seat)=>(

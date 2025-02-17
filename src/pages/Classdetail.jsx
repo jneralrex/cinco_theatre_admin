@@ -3,7 +3,6 @@ import { MdCancel } from "react-icons/md";
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Api from '../utils/AxiosInstance';
-import axios from 'axios';
 
 
 

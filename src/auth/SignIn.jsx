@@ -37,7 +37,7 @@ const SignIn = () => {
         <img src={Logo} alt="" />
       </div>
       <div className="p-3 max-w-lg mx-auto">
-        <p className="text-center text-2xl text-gray-500 p-2">Web Admin</p>
+        <p className="text-center text-2xl text-gray-500 p-2">Theatre Admin</p>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         <form className="flex flex-col gap-4" onSubmit={handleSignIn}>
           <label>
@@ -70,12 +70,6 @@ const SignIn = () => {
           </button>
         </form>
         <div className="w-full flex justify-between text-sm">
-          <span>
-            Don't have an account?{" "}
-            <Link to="/sign-up" className="text-blue-600">
-              Sign Up
-            </Link>
-          </span>
           <Link to="/forgot-password" className="text-blue-600">
             Forgot Password
           </Link>
