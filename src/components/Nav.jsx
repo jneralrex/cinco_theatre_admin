@@ -21,6 +21,7 @@ const Nav = () => {
   const  loggedAdmin = useSelector((state) => state.theatre.theatre);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);

@@ -3,23 +3,28 @@ import { GlobalController } from "../Global";
 import { MdCancel } from "react-icons/md";
 import Api from "../../../utils/AxiosInstance";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const ClassForm = () => {
   const { addClass, setAddClass } = useContext(GlobalController);
+
+  const loggedAdmin = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
 
   const [newClass, setNewClass]=useState({
     className:"",
     numberOfRows:"",
     price:"",
     availability:"",
-    theatre:""
+    theatre:loggedAdmin
   })
   const [newClassError, setNewClassError]=useState({
     className:"",
     numberOfRows:"",
     price:"",
     availability:"",
-    theatre:""
+    theatre:loggedAdmin
   })
 
   const handleChange = (e) => {
@@ -70,7 +75,7 @@ const ClassForm = () => {
             console.log(error.message);   
         }
     }else{
-      console.log("error in validation");
+      console.log("error in validation" , error.message);
     }
   }
 

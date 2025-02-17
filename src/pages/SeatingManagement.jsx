@@ -2,6 +2,7 @@ import axios, { all } from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import Api from '../utils/AxiosInstance';
+import { useSelector } from 'react-redux';
 
 const SeatingManagement = () => {
     // handle modal
@@ -11,13 +12,17 @@ const SeatingManagement = () => {
     const handleOpenModal = () => {
         setOpenModal(true)
     }
-
+    const loggedAdmin = useSelector(
+      (state) => state.theatre?.theatre?.theatre?._id
+    );
     // post seat
     const [seat, setSeat] = useState ({
         seatNumber:"",
         isBlocked: false,
-        isBought:false
-    })
+        isBought:false,
+        theatre: loggedAdmin   
+      })
+
     const handleChange = (e) => {
         const { name, value } = e.target;
     
@@ -35,13 +40,16 @@ const SeatingManagement = () => {
         e.preventDefault();
         console.log("button clicked");
         try {
-            const resp = await Api.post(`seat`,seat)
+            // const resp = await Api.post(`seat`,seat)
+            const resp = await axios.post(`http://localhost:5000/api/v1/seat/`, seat);
+
             if(resp.status===201){
                 getAllSeats()
                 console.log(resp.data);  
             }
         } catch (error) {
-            console.log(error.message);
+          console.log(error)
+            console.log(error.response.data.message);
         }
       }
 
