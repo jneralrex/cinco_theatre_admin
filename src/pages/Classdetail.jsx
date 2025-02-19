@@ -8,8 +8,9 @@ import Api from '../utils/AxiosInstance';
 
 const Classdetail = () => {
     const params = useParams()
-    const id = params.id
+    const id = params.id;
 
+    const [error,SetError]= useState(null)
     const [singleClasses, setSingleClasses] = useState({})
 
     const getSingleClass =async()=>{
@@ -19,7 +20,7 @@ const Classdetail = () => {
                 setSingleClasses(resp.data)
             }
         } catch (error) {
-            console.log(error.message); 
+            SetError(error.message)
         }
     }
 
