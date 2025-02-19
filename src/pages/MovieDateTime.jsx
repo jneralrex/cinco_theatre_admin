@@ -17,41 +17,66 @@ import DotsLoader from "../components/DotLoader";
 import Api from "../utils/AxiosInstance";
 
 const MovieDateTime = () => {
-    const params = useParams();
-    const { id } = params;
-    const [movie, setMovie] = useState({})
-    const [showDates, setShowDates] = useState([]);
-    const [ loading, setLoading ] = useState(true);
-    const [selectedDateId, setSelectedDateId] = useState(null);
+  const params = useParams();
+  const { id } = params;
+  const [movie, setMovie] = useState({});
+  const [theatreLocation, setTheatreLocation] = useState({});
+  const [showDates, setShowDates] = useState([]);
+  const [ loading, setLoading ] = useState(true);
+  const [error, setError] = useState(null)
+  const [selectedDateId, setSelectedDateId] = useState(null);
 
+  // Convert time to 12-hour format with AM/PM
+  const formatTime = (time) => {
+    const [hour, minute] = time.split(":").map(Number);
+    const amPm = hour >= 12 ? "PM" : "AM";
+    const formattedHour = hour % 12 || 12;
+    return `${formattedHour}:${minute.toString().padStart(2, "0")} ${amPm}`;
+  };
 
-    // Function to convert time to 12-hour format with AM/PM
-    const formatTime = (time) => {
-        const [hour, minute] = time.split(":").map(Number);
-        const amPm = hour >= 12 ? "PM" : "AM";
-        const formattedHour = hour % 12 || 12; // Convert 0 to 12 for midnight
-        return `${formattedHour}:${minute.toString().padStart(2, "0")} ${amPm}`;
-    };
+  // Fetch show dates from API
+  const getShowDates = async () => {
+    try {
+      const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`);
+      if (resp.status === 200) {
+        const fetchedData = resp.data.data;
+        setMovie(resp.data.movie);
+        setShowDates(fetchedData);
 
-    const getShowDates = async ()=>{
-      try {
-        // const response = await Api.get(`airingdate/${id}`);
-        const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`)
-        console.log(resp.data)
-        if(resp.status === 200){
-            setLoading();
-            setMovie(resp.data.movie);
-            setShowDates(resp.data.data);
+        // Automatically select the first available date
+        if (fetchedData.length > 0) {
+          setSelectedDateId(fetchedData[0]._id);
         }
-        } catch (error) {
-            console.log(` Error fetching showDates:`, error);
-        }
-    };
+
+        await getTheatre(resp.data.movie.theatre_id._id);
+      }
+    } catch (error) {
+      console.error("Error fetching showDates:", error);
+      setError(error.message)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch theatre details
+  const getTheatre = async (theatreId) => {
+    try {
+      const resp = await Api.get(`theatre/theatres/${theatreId}`);
+      if (resp.status === 200) {
+        setTheatreLocation(resp.data.theatre);
+      }
+    } catch (error) {
+      console.error("Error fetching theatre:", error);
+    }
+  };
+
 
     useEffect(()=>{
-        getShowDates();
+      getShowDates();
     },[]);
+
     if(loading) return <DotsLoader />;
+    if(error) return <div>No showtimes found for this movie</div>;
   return (
     <div>
       <div className="mt-[50px] lg:w-[80%] md:mt-[80px] w-[90%] mx-auto">
@@ -140,7 +165,7 @@ const MovieDateTime = () => {
                   </div>
                   <div className="lg:hidden flex w-full justify-between lg:gap-[50px] items-center">
                     <p className="text-sm font-semibold mb-4">
-                      Galleria, Victoria Island, Lagos
+                      {theatreLocation?.theatreName}, {theatreLocation?.theatreLocation?.location[0].cities[0].street} {theatreLocation?.theatreLocation?.location[0].cities[0].city}, {theatreLocation?.theatreLocation?.location[0].state}
                     </p>
                     <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
                       <MdInfoOutline />
@@ -151,7 +176,8 @@ const MovieDateTime = () => {
                 <div>
                   <div className="hidden lg:flex gap-[50px] items-center">
                     <p className="text-sm font-semibold mb-4">
-                      Galleria, Victoria Island, Lagos
+                    {theatreLocation?.theatreName}, {theatreLocation?.theatreLocation?.location[0].cities[0].street}{" "}
+                    {theatreLocation?.theatreLocation?.location[0].cities[0].city}, {theatreLocation?.theatreLocation?.location[0].state}
                     </p>
                     <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
                       <MdInfoOutline />
@@ -169,6 +195,7 @@ const MovieDateTime = () => {
                     </div>
                   </div>
                 </div>
+                {/* Showtimes */}
                 <div>
                     <div className="flex gap-4 mt-2">
                         {
@@ -178,7 +205,7 @@ const MovieDateTime = () => {
                                 <Link key={_id} to="/seat-page">
                                     <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
                                         <p className="text-green-400">{formatTime(time)}</p>
-                                        <p className="text-gray-400">{`${screen_id.screenName} ${screen_id.screenType}`}</p>
+                                        <p className="text-gray-400">{screen_id ? `${screen_id.screenName} ${screen_id.screenType}` : "Unknown Screen"}</p>
                                     </div>
                                 </Link>
                             ))

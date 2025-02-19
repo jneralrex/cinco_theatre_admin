@@ -581,8 +581,8 @@ const MovieDetailPage = () => {
                 </div>
             </div> 
             <div className='lg:hidden py-2 px-5 bg-white border-t shadow-xl z-5 fixed bottom-0 left-0 right-0'>
-                <Link to='/movie-date-time'>
-                    <button className='w-full bg-purple-800 rounded-lg py-2 text-white'>Add streaming Dates and Time</button>  
+                <Link to={`/movie-date-time/${movieId}`}>
+                    <button className='w-full bg-purple-800 rounded-lg py-2 text-white'>View streaming Dates and Time</button>  
                 </Link>  
             </div>       
         </div>

@@ -17,9 +17,10 @@ const DateForm = () => {
   );
 
   const [newDate, setNewDate] = useState({
+    theatre_id: loggedAdmin,
     movie_id: '',
     date: '',
-    show_times: [{ time: '', screen_id: '', available_seats: '' }]
+    show_times: [{ time: '', screen_id: '', available_seats: '' }],
   });
 
   const handleNestedChange = (e, field, index) => {
@@ -51,9 +52,17 @@ const DateForm = () => {
     try {
       // const resp = await Api.post(`airingdate/new`, {...newDate, movie_id: id});
       const resp = await axios.post('http://localhost:5000/api/v1/airingdate/new', {...newDate, movie_id: id});
-      console.log(resp);
+      // console.log(resp);
+      if(resp.status === 201){
+        setNewDate({
+          movie_id: '',
+          date: '',
+          show_times: [{ time: '', screen_id: '', available_seats: '' }],
+        });
+        setAddDate("");
+      }
     } catch (error) {
-      console.log(` Error creating date: ${error.message}`);
+      console.log(` Error creating date: ${error}`, error);
     }
   };
   
