@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { GlobalController } from '../components/globalController/Global';
 import DateForm from '../components/globalController/forms/DateForm';
 import Api from '../utils/AxiosInstance';
+import axios from 'axios';
 
 const MovieManagement = () => {
   const { addDate, setAddDate } = useContext(GlobalController);
@@ -15,13 +16,16 @@ const MovieManagement = () => {
   const loggedAdminCinema = useSelector(
     (state) => state.theatre?.theatre?.theatre?.theatreCinema    
   );
+  const loggedAdminTheater = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
   
   const [all_movie_on_database, setAllMovieOnDatabase]= useState([]);
   const [loading, setLoading]=useState(true)
 
   const fetchAllMovieByCinema = async () => {
     try {
-      const resp = await Api.get(`movies?cinema_id=${loggedAdminCinema}`);
+      const resp = await Api.get(`movies/theater?theatre_id=${loggedAdminTheater}`);
       // console.log(resp)
       if(resp.status === 200){
         setLoading(false)

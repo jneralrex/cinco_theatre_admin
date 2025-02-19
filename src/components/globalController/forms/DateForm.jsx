@@ -50,8 +50,8 @@ const DateForm = () => {
     e.preventDefault();
     const id = localStorage.getItem("movieId");
     try {
-      // const resp = await Api.post(`airingdate/new`, {...newDate, movie_id: id});
-      const resp = await axios.post('http://localhost:5000/api/v1/airingdate/new', {...newDate, movie_id: id});
+      const resp = await Api.post(`airingdate/new`, {...newDate, movie_id: id});
+      // const resp = await axios.post('http://localhost:5000/api/v1/airingdate/new', {...newDate, movie_id: id});
       // console.log(resp);
       if(resp.status === 201){
         setNewDate({

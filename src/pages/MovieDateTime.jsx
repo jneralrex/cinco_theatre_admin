@@ -37,7 +37,8 @@ const MovieDateTime = () => {
   // Fetch show dates from API
   const getShowDates = async () => {
     try {
-      const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`);
+      const resp = Api.get(`/airingdate/${id}`);
+      // const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`);
       if (resp.status === 200) {
         const fetchedData = resp.data.data;
         setMovie(resp.data.movie);
