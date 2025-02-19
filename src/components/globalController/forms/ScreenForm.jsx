@@ -29,15 +29,13 @@ const ScreenForm = () => {
           screenCapacity: "",
           screenType: "",
         });
+        dispatch(getAllScreen(loggedAdmin))
         setAddScreen("")
-       dispatch(getAllScreen(loggedAdmin))
-        
       })
       .catch((error) => {
         console.error(error);
       });
   };
-  console.log(createNewScreen)
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
