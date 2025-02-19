@@ -30,7 +30,7 @@ const ScreenForm = () => {
           screenType: "",
         });
         setAddScreen("")
-       dispatch(getAllScreen())
+       dispatch(getAllScreen(loggedAdmin))
         
       })
       .catch((error) => {
