@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import { GlobalController } from "../Global";
-import axios from "axios";
 import Api from "../../../utils/AxiosInstance";
 import { useSelector } from "react-redux";
 
@@ -96,8 +95,7 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
     // console.log(data)
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/movies/new', data)
-      // const response = await Api.post('movies/new', data);
+      const response = await Api.post('movies/new', data);
       // console.log(response)
       if(response.status === 201){
         setLoading(false);

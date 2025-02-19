@@ -13,20 +13,36 @@ import { Link, useParams } from "react-router-dom";
 import { BiSearch } from "react-icons/bi";
 import { IoMdHeartEmpty } from "react-icons/io";
 import axios from "axios";
+import DotsLoader from "../components/DotLoader";
+import Api from "../utils/AxiosInstance";
 
 const MovieDateTime = () => {
     const params = useParams();
     const { id } = params;
+    const [movie, setMovie] = useState({})
     const [showDates, setShowDates] = useState([]);
     const [ loading, setLoading ] = useState(true);
+    const [selectedDateId, setSelectedDateId] = useState(null);
+
+
+    // Function to convert time to 12-hour format with AM/PM
+    const formatTime = (time) => {
+        const [hour, minute] = time.split(":").map(Number);
+        const amPm = hour >= 12 ? "PM" : "AM";
+        const formattedHour = hour % 12 || 12; // Convert 0 to 12 for midnight
+        return `${formattedHour}:${minute.toString().padStart(2, "0")} ${amPm}`;
+    };
+
     const getShowDates = async ()=>{
-        try {
-            const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`)
-            console.log(resp.data.data)
-            if(resp.status === 200){
-                setLoading();
-                setShowDates(resp.data.data)
-            }
+      try {
+        // const response = await Api.get(`airingdate/${id}`);
+        const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`)
+        console.log(resp.data)
+        if(resp.status === 200){
+            setLoading();
+            setMovie(resp.data.movie);
+            setShowDates(resp.data.data);
+        }
         } catch (error) {
             console.log(` Error fetching showDates:`, error);
         }
@@ -34,83 +50,55 @@ const MovieDateTime = () => {
 
     useEffect(()=>{
         getShowDates();
-    },[])
+    },[]);
+    if(loading) return <DotsLoader />;
   return (
     <div>
       <div className="mt-[50px] lg:w-[80%] md:mt-[80px] w-[90%] mx-auto">
         <div>
           <p className="lg:text-[38px] text-[18px] font-semibold pt-5">
-            Kraven: The Hunter (4DX) - English
+            {movie?.title} (4DX) - English
           </p>
         </div>
         <div className="flex lg:gap-2 gap-1 my-2">
-          <div className="rounded-full text-gray-400 border border-black/40 flex items-center justify-center lg:size-5 size-4">
-            <p className="text-center text-xs">A</p>
-          </div>
-          <div className="rounded-full text-gray-400 border flex justify-center items-center border-gray-400 lg:px-2 px-1">
-            <p className="text-center text-gray-400 lg:text-[10px] text-[8px]">
-              ACTION
-            </p>
-          </div>
-          <div className="rounded-full text-gray-400 border flex justify-center items-center border-gray-400 lg:px-2 px-1">
-            <p className="text-center text-gray-400 lg:text-[10px] text-[8px]">
-              ADVENTURE
-            </p>
-          </div>
-          <div className="rounded-full text-gray-400 border flex justify-center items-center border-gray-400 lg:px-2 px-1">
-            <p className="text-center text-gray-400 lg:text-[10px] text-[8px]">
-              DRAMA
-            </p>
-          </div>
+          {movie?.genre?.[0]?.split(",").map((g, index) => (
+                <div key={index} className="rounded-full text-gray-400 border flex justify-center items-center border-gray-400 lg:px-2 px-1">
+                  <p className="text-center text-gray-400 lg:text-[10px] text-[8px]">
+                    {g}
+                  </p>
+                </div>
+              )) || <span>No genres available</span>
+          }
         </div>
       </div>
       <hr className="mt-[20px] border border-gray-200" />
       <div className="lg:w-[80%] w-[90%] mx-auto block relative lg:flex justify-between mt-5 pb-1">
         <div className="flex overflow-x-scroll lg:overflow-hidden gap-2 items-center">
-          <TfiAngleLeft className="absolute left-0 lg:relative cursor-pointer" />
-          <div className="flex gap-1 items-center">
-            <button className="bg-purple-800 text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">THU</p>
-              <p className="font-semibold text-[16px]">02</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">FRI</p>
-              <p className="font-semibold text-[16px]">03</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">SAT</p>
-              <p className="font-semibold text-[16px]">04</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">SUN</p>
-              <p className="font-semibold text-[16px]">05</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">MON</p>
-              <p className="font-semibold text-[16px]">04</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">SAT</p>
-              <p className="font-semibold text-[16px]">04</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">SAT</p>
-              <p className="font-semibold text-[16px]">04</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-            <button className="focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ">
-              <p className="text-[11px] leading-none">SUN</p>
-              <p className="font-semibold text-[16px]">05</p>
-              <p className="text-[11px] leading-none">JAN</p>
-            </button>
-          </div>
-          <TfiAngleRight className=" cursor-pointer right-0 absolute lg:relative" />
+            <TfiAngleLeft className="absolute left-0 lg:relative cursor-pointer" />
+            <div className="flex gap-1 items-center">
+                {
+                    showDates?.map((date)=>{
+                        const parsedDate = new Date(date.date);
+                        const dayShort = parsedDate.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(); // "MON"
+                        const dayNum = parsedDate.toLocaleDateString("en-US", { day: "2-digit" }); // "17"
+                        const monthShort = parsedDate.toLocaleDateString("en-US", { month: "short" }).toUpperCase(); // "FEB"
+                        return (
+                            <button
+                                key={date._id} 
+                                onClick={() => setSelectedDateId(date._id)}
+                                className={`focus:bg-purple-800 hover:text-purple-800 focus:text-white rounded-lg px-4 py-1 flex flex-col items-center justify-center ${
+                                selectedDateId === date._id ? "bg-purple-800 text-white" : ""
+                                }`}
+                            >
+                                <p className="text-[11px] leading-none">{dayShort}</p>
+                                <p className="font-semibold text-[16px]">{dayNum}</p>
+                                <p className="text-[11px] leading-none">{monthShort}</p>
+                            </button>
+                        )
+                    })
+                }
+            </div>
+            <TfiAngleRight className=" cursor-pointer right-0 absolute lg:relative" />
         </div>
         <div className="hidden lg:flex items-center">
           <div className="border-l border-r border-b-4 py-5 px-4 border-b-purple-800 flex items-center justify-center gap-2 font-semibold text-sm">
@@ -182,81 +170,26 @@ const MovieDateTime = () => {
                   </div>
                 </div>
                 <div>
-                  <div className="flex gap-4 mt-2">
-                    <Link to="/seat-page">
-                      <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
-                        <p className="text-green-400">11:45 AM</p>
-                        <p className="text-gray-400">DOLBY 7.1</p>
-                      </div>
-                    </Link>
-                    <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
-                      <p className="text-green-400">5:25 PM</p>
-                      <p className="text-gray-400">DOLBY 7.1</p>
+                    <div className="flex gap-4 mt-2">
+                        {
+                            selectedDateId &&
+                            showDates.find((date)=> date._id === selectedDateId)
+                            ?.show_times.map(({ _id, time, screen_id, available_seats })=>(
+                                <Link key={_id} to="/seat-page">
+                                    <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
+                                        <p className="text-green-400">{formatTime(time)}</p>
+                                        <p className="text-gray-400">{`${screen_id.screenName} ${screen_id.screenType}`}</p>
+                                    </div>
+                                </Link>
+                            ))
+                        }
                     </div>
-                  </div>
-                  <div className="flex gap-3 items-center mt-3">
-                    <GoDotFill color="yellow" />
-                    <p className="text-gray-500 text-[13px]">
-                      Non-cancellable{" "}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="lg:flex gap-3 items-start p-[30px] border-t">
-                <div className="flex lg:block gap-2">
-                  <div>
-                    <IoMdHeartEmpty className="lg:text-lg text-black/40" />
-                  </div>
-                  <div className="lg:hidden flex w-full justify-between lg:gap-[50px] items-center">
-                    <p className="text-sm font-semibold mb-4">
-                      Galleria, Victoria Island, Lagos
-                    </p>
-                    <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
-                      <MdInfoOutline />
-                      <p className="text-[12px]">INFO</p>
+                    <div className="flex gap-3 items-center mt-3">
+                        <GoDotFill color="yellow" />
+                        <p className="text-gray-500 text-[13px]">
+                            Non-cancellable{" "}
+                        </p>
                     </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="hidden lg:flex gap-[50px] items-center">
-                    <p className="text-sm font-semibold mb-4">
-                      Galleria, Victoria Island, Lagos
-                    </p>
-                    <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
-                      <MdInfoOutline />
-                      <p className="text-[12px]">INFO</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-6 mb-3">
-                    <div className="flex gap-1 text-green-500">
-                      <TfiTicket size={17} />
-                      <p className="text-xs">M-Ticket</p>
-                    </div>
-                    <div className="flex gap-1 text-orange-400">
-                      <IoFastFoodOutline size={17} />
-                      <p className="text-xs">Food & Beverage</p>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex gap-4 mt-2">
-                    <Link to="/seat-page">
-                      <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
-                        <p className="text-green-400">11:45 AM</p>
-                        <p className="text-gray-400">DOLBY 7.1</p>
-                      </div>
-                    </Link>
-                    <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
-                      <p className="text-green-400">5:25 PM</p>
-                      <p className="text-gray-400">DOLBY 7.1</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3 items-center mt-3">
-                    <GoDotFill color="yellow" />
-                    <p className="text-gray-500 text-[13px]">
-                      Non-cancellable{" "}
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>

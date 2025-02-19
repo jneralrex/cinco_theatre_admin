@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import AddMovie from '../components/globalController/triggers/AddMovie'
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from '../components/Skeleton';
 import { useSelector } from 'react-redux';
 import { GlobalController } from '../components/globalController/Global';
 import DateForm from '../components/globalController/forms/DateForm';
+import Api from '../utils/AxiosInstance';
 
 const MovieManagement = () => {
   const { addDate, setAddDate } = useContext(GlobalController);
@@ -21,7 +21,7 @@ const MovieManagement = () => {
 
   const fetchAllMovieByCinema = async () => {
     try {
-      const resp = await axios.get(`http://localhost:5000/api/v1/movies?cinema_id=${loggedAdminCinema}`)
+      const resp = await Api.get(`movies?cinema_id=${loggedAdminCinema}`);
       // console.log(resp)
       if(resp.status === 200){
         setLoading(false)
@@ -84,7 +84,7 @@ const MovieManagement = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this movie?")) {
       try {
-        const resp = await axios.delete(`http://localhost:5000/api/v1/movies/${id}`);
+        const resp = await Api.delete(`movies/${id}`);
         // console.log(resp)
         fetchAllMovieByCinema();
       } catch (error) {
@@ -97,7 +97,7 @@ const MovieManagement = () => {
   //toggle availability
   const toggleAvailability = async (id) => {
     try {
-      const resp = await axios.patch(`http://localhost:5000/api/v1/movies/${id}/toggle-availability`)
+      const resp = await Api.patch(`movies/${id}/toggle-availability`);
       // console.log(resp)
       if(resp.status === 200 && resp.data.success === true){
         fetchAllMovieByCinema();

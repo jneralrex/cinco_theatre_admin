@@ -14,6 +14,7 @@ import { TfiAngleRight } from "react-icons/tfi";
 import { useParams } from 'react-router-dom'
 import axios from 'axios';
 import DotsLoader from '../components/DotLoader';
+import Api from '../utils/AxiosInstance';
 
 const MovieDetailPage = () => {
     const params = useParams();
@@ -24,7 +25,7 @@ const MovieDetailPage = () => {
 
     const singleMovie = async ()=>{
         try {
-            const resp = await axios.get(`http://localhost:5000/api/v1/movies/${movieId}`)
+            const resp = await Api.get(`movies/${movieId}`);
             // console.log(resp.data.data)
             if(resp.status === 200){
                 setLoading(false);
