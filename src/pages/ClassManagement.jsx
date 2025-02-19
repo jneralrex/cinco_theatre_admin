@@ -15,7 +15,7 @@ const mockUsers = Array.from({ length: 50 }, (_, index) => ({
 const ClassManagement = () => {
       const { newClass} = useContext(GlobalController);
     
-    
+    const [error, SetError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
     const [currentPage, setCurrentPage] = useState(1);
@@ -37,7 +37,6 @@ const ClassManagement = () => {
     
     //get all classes
     const [allClasses, setAllClasses] = useState ([])
-    console.log(allClasses);
     
     const getClass= async ()=>{
       try {
@@ -46,7 +45,7 @@ const ClassManagement = () => {
             setAllClasses(resp.data)
           }
         } catch (error) {
-          console.log(error.message); 
+          SetError(error.message);
         }
       }
       useEffect (()=>{
@@ -67,11 +66,8 @@ const ClassManagement = () => {
                   if(resp.status === 200){
                     getClass()
                   }
-                  else{
-                    console.log(resp.data.data);
-                  }
               } catch (error) {
-                console.log(error.message);
+                SetError(error.message)
               }
           }
 
@@ -148,10 +144,10 @@ const ClassManagement = () => {
               setIsModalEditOpen(false)
             }
           } catch (error) {
-            console.log(error.message); 
+            SetError(error.message)
           }    
       }else{
-        console.log("error in validation");    
+        SetError("error in validation")
       }
     }
     const handleEditClick = (id,newClass) => {

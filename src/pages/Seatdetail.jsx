@@ -10,6 +10,7 @@ const Seatdetail = () => {
     const id = params.id
 
     const [singleSeat, setSingleSeat] = useState({})
+    const [error,SetError]= useState(null);
 
     const getSingleSeat =async()=>{
         try {
@@ -18,7 +19,7 @@ const Seatdetail = () => {
                 setSingleSeat(resp.data.data)
             }
         } catch (error) {
-            console.log(error.message); 
+          SetError(error.message);
         }
     }
     useEffect(()=>{
