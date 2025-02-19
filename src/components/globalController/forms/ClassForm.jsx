@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 const ClassForm = () => {
   const { addClass, setAddClass } = useContext(GlobalController);
 
+  const [error,SetError] = useState(null)
+
   const loggedAdmin = useSelector(
     (state) => state.theatre?.theatre?.theatre?._id
   );
@@ -33,7 +35,6 @@ const ClassForm = () => {
         ...prevState,
         [name]: value
     }));
-    // console.log(`${name}: ${value}`);
   };
 
   const formValidate = ()=>{
@@ -66,16 +67,14 @@ const ClassForm = () => {
     if (formValidate()){
         try {
             const resp = await Api.post(`class/classes`,newClass);
-            // console.log(resp); 
             if(resp.status === 201){
-              console.log(resp.data.classes);
+              window.location.reload()
             }
-            window.location.reload()
         } catch (error) {
-            console.log(error.message);   
+          SetError(error.message)
         }
     }else{
-      console.log("error in validation" , error.message);
+      SetError("error in validation" , error.message)
     }
   }
 

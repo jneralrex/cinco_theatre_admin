@@ -6,9 +6,14 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 const RowManagement = () => {
+
+
     // handle modal
     const [openModal, setOpenModal] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState (false)
+
+    //handle error
+    const [error,SetError] = useState(null);
 
     const handleOpenModal = () => {
         setOpenModal(true)
@@ -22,8 +27,6 @@ const RowManagement = () => {
       seatIds: [],  
       theatre: loggedAdmin
   });
-  
-  console.log(row);
   
   const handleChange = (e) => {
       const { name, value, options } = e.target;
@@ -46,25 +49,19 @@ const RowManagement = () => {
           }));
       }
   
-      console.log(`${name}: ${value}`);
   };
   
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      console.log("Clicked button");
-  
+      e.preventDefault();  
       try {
-          
           const payload = {
               ...row,
               seatIds: row.seatIds || []  
           };
-  
-          const resp = await axios.post(`http://localhost:5000/api/v1/row/rows`, payload);
-          console.log(resp);
+          const resp = await Api.post(`/row/rows`,payload)
           getAllRow();
       } catch (error) {
-          console.log(error.response?.data?.message || "An error occurred");
+        SetError(error.response?.data?.message || "An error occurred");
       }
   };
   
@@ -81,7 +78,7 @@ const RowManagement = () => {
               setAllSeats([]); 
           }
         } catch (error) {
-            console.log(error.message);  
+            SetError(error.message)
         }
       };
 
@@ -90,16 +87,14 @@ const RowManagement = () => {
       
       const getAllRow = async () => {
         try {
-            // const resp = await Api.get(`row/all-rows/${loggedAdmin}`)
-            const resp = await axios.get(`http://localhost:5000/api/v1/row/all-rows/${loggedAdmin}`);
-            console.log("resp",resp);
+            const resp = await Api.get(`row/all-rows/${loggedAdmin}`)
             if (Array.isArray(resp.data.data)) {
               setAllRow(resp.data.data);
           } else {
             setAllRow([]); 
           }
         } catch (error) {
-            console.log(error);  
+            SetError(error)
         }
       }
 
@@ -123,7 +118,7 @@ const RowManagement = () => {
                 getAllRow()
               }
           } catch (error) {
-            console.log(error.message);
+            SetError(error.message)
           }
       }
 
@@ -156,7 +151,6 @@ const RowManagement = () => {
           ...prevState,
           [name]: value
       }));
-      // console.log(`${name}: ${value}`);
     };
 
     const validateForms = () => {
@@ -177,17 +171,16 @@ const RowManagement = () => {
       if(validateForms()){
           try {
             const resp = await Api.put(`row/rows/${rowToEdit}`,newEditRow)
-            console.log(resp);           
             if(resp.status === 200){
               setEditedRow(newEditRow)
               getAllRow()
               setIsModalEditOpen(false)
             }
           } catch (error) {
-            console.log(error.message); 
+            SetError(error.message)
           }    
       }else{
-        console.log("error in validation");    
+        SetError("error in validation")
       }
     }
     const handleEditClick = (id,newRow) => {

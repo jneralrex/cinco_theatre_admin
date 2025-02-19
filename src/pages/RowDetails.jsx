@@ -11,7 +11,8 @@ const Rowdetail = () => {
     const params = useParams()
     const id = params.id
 
-    const [singleRow, setSingleRow] = useState({})
+    const [singleRow, setSingleRow] = useState({});
+    const [error, SetError]= useState(null);
     
     const getSingleRow =async()=>{
         try {
@@ -20,7 +21,7 @@ const Rowdetail = () => {
                 setSingleRow(resp.data.data)
             }
         } catch (error) {
-            console.log(error.message); 
+            SetError(error.message);
         }
     }
     useEffect(()=>{

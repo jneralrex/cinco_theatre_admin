@@ -9,6 +9,9 @@ const SeatingManagement = () => {
     const [openModal, setOpenModal] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState (false)
 
+    // handle error
+    const [error, SetError]= useState(null);
+
     const handleOpenModal = () => {
         setOpenModal(true)
     }
@@ -31,32 +34,25 @@ const SeatingManagement = () => {
             [name]: name === "isBlocked" || name === "isBought" ? value === "true" : value
         }));
     
-        console.log(`${name}: ${name === "isBlocked" || name === "isBought" ? value === "true" : value}`);
     };
     
     
 
       const handleSubmit =async(e)=>{
         e.preventDefault();
-        console.log("button clicked");
         try {
-            // const resp = await Api.post(`seat`,seat)
-            const resp = await axios.post(`http://localhost:5000/api/v1/seat/`, seat);
-
+            const resp = await Api.post(`seat`,seat)
             if(resp.status===201){
                 getAllSeats()
-                console.log(resp.data);  
             }
         } catch (error) {
-          console.log(error)
-            console.log(error.response.data.message);
+          SetError(error.response.data.message);
         }
       }
 
       // get all seats
 
       const [allseats, setAllSeats] = useState([])
-      console.log(allseats);
 
       const getAllSeats = async () => {
         try {
@@ -67,7 +63,7 @@ const SeatingManagement = () => {
               setAllSeats([]); 
           }
         } catch (error) {
-            console.log(error.message);  
+            SetError(error.message);
         }
       }
 
@@ -89,7 +85,7 @@ const SeatingManagement = () => {
                 getAllSeats()
               }
           } catch (error) {
-            console.log(error.message);
+            SetError(error.message)
           }
       }
 
@@ -127,7 +123,6 @@ const SeatingManagement = () => {
           [name]: name === "isBlocked" || name === "isBought" ? value === "true" : value
       }));
   
-      console.log(`${name}: ${name === "isBlocked" || name === "isBought" ? value === "true" : value}`);
   };
 
     const validateForm = () => {
@@ -153,7 +148,6 @@ const SeatingManagement = () => {
       if(validateForm()){
           try {
             const resp = await Api.put(`seat/${seatToEdit}`,newEditseat)
-            console.log(resp);
                       
             if(resp.status === 200){
               setEditedSeat(newEditseat)
@@ -161,10 +155,10 @@ const SeatingManagement = () => {
               setIsModalEditOpen(false)
             }
           } catch (error) {
-            console.log(error.message); 
+            SetError(error.message); 
           }    
       }else{
-        console.log("error in validation");    
+        SetError("error in validation");
       }
     }
     const handleEditClick = (id,newSeat) => {
