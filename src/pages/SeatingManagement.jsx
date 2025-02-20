@@ -19,12 +19,14 @@ const SeatingManagement = () => {
       (state) => state.theatre?.theatre?.theatre?._id
     );
     // post seat
-    const [seat, setSeat] = useState ({
+
+    const initalSeatState ={
         seatNumber:"",
         isBlocked: false,
         isBought:false,
-        theatre: loggedAdmin   
-      })
+        theatre: loggedAdmin 
+    }
+    const [seat, setSeat] = useState (initalSeatState)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -35,15 +37,14 @@ const SeatingManagement = () => {
         }));
     
     };
-    
-    
 
       const handleSubmit =async(e)=>{
         e.preventDefault();
         try {
             const resp = await Api.post(`seat`,seat)
             if(resp.status===201){
-                getAllSeats()
+                getAllSeats();
+                setSeat(initalSeatState)
             }
         } catch (error) {
           SetError(error.response.data.message);
@@ -53,7 +54,8 @@ const SeatingManagement = () => {
       // get all seats
 
       const [allseats, setAllSeats] = useState([])
-
+      console.log(allseats);
+      
       const getAllSeats = async () => {
         try {
             const resp = await Api.get(`seat`)
@@ -172,7 +174,7 @@ const SeatingManagement = () => {
     }
 
   return (
-    <div className='pb-7'>
+    <div className='p-4'>
         <form onSubmit={handleSubmit}  className='pt-[20px] pr-4'>
                 <h1 className='font-bold text-[20px] mb-[20px]'>Seat Management</h1>
             <div>

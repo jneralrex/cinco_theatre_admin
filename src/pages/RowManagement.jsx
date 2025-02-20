@@ -22,12 +22,13 @@ const RowManagement = () => {
       (state) => state.theatre?.theatre?.theatre?._id
     );
     // post row
-    const [row, setRow] = useState({
+    const initialRowState ={
       rowName: "",
       seatIds: [],  
       theatre: loggedAdmin
-  });
-  
+    }
+    const [row, setRow] = useState(initialRowState);
+    
   const handleChange = (e) => {
       const { name, value, options } = e.target;
   
@@ -59,7 +60,12 @@ const RowManagement = () => {
               seatIds: row.seatIds || []  
           };
           const resp = await Api.post(`/row/rows`,payload)
-          getAllRow();
+          if(resp.status === 201){
+            getAllRow();
+            setRow(initialRowState);
+            SetError(null);
+          }
+          
       } catch (error) {
         SetError(error.response?.data?.message || "An error occurred");
       }
@@ -194,7 +200,7 @@ const RowManagement = () => {
     }
 
   return (
-    <div className='pb-7'>
+    <div className='p-4'>
         <form onSubmit={handleSubmit}  className='pt-[20px] pr-4'>
           <div>
 
