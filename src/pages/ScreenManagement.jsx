@@ -45,7 +45,7 @@ const ScreenManagement = () => {
       dispatch(deleteScreen({ screenId: encryptedId }))
         .unwrap()
         .then(() => {
-          dispatch(getAllScreen());
+          dispatch(getAllScreen(loggedAdmin));
         })
         .catch((error) => {
           console.error(error);
