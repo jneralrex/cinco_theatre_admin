@@ -15,6 +15,7 @@ const SeatingManagement = () => {
     const handleOpenModal = () => {
         setOpenModal(true)
     }
+    
     const loggedAdmin = useSelector(
       (state) => state.theatre?.theatre?.theatre?._id
     );
