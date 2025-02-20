@@ -19,13 +19,17 @@ const SeatingManagement = () => {
     const loggedAdmin = useSelector(
       (state) => state.theatre?.theatre?.theatre?._id
     );
+    console.log("Logged admin theatre id:", loggedAdmin);
+
     // post seat
-    const [seat, setSeat] = useState ({
+
+    const initalSeatState ={
         seatNumber:"",
         isBlocked: false,
         isBought:false,
-        theatre: loggedAdmin   
-      })
+        theatre: loggedAdmin 
+    }
+    const [seat, setSeat] = useState (initalSeatState)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,15 +40,14 @@ const SeatingManagement = () => {
         }));
     
     };
-    
-    
 
       const handleSubmit =async(e)=>{
         e.preventDefault();
         try {
             const resp = await Api.post(`seat`,seat)
             if(resp.status===201){
-                getAllSeats()
+                getAllSeats();
+                setSeat(initalSeatState)
             }
         } catch (error) {
           SetError(error.response.data.message);
@@ -54,10 +57,11 @@ const SeatingManagement = () => {
       // get all seats
 
       const [allseats, setAllSeats] = useState([])
-
-      const getAllSeats = async () => {
+      
+      const getAllSeats = async (id) => {
         try {
-            const resp = await Api.get(`seat`)
+            const resp = await Api.get(`seat/${id}`)
+            
             if (Array.isArray(resp.data.data)) {
               setAllSeats(resp.data.data);
           } else {
@@ -68,9 +72,11 @@ const SeatingManagement = () => {
         }
       }
 
-      useEffect(()=>{
-        getAllSeats()
-      },[])
+      useEffect(() => {
+        if (loggedAdmin) {
+          getAllSeats(loggedAdmin);
+        }
+      }, [loggedAdmin]);
 
       // delete seat
       const [deleteSeat, setDeleteSeat] = useState({})
@@ -173,7 +179,7 @@ const SeatingManagement = () => {
     }
 
   return (
-    <div className='pb-7'>
+    <div className='p-4'>
         <form onSubmit={handleSubmit}  className='pt-[20px] pr-4'>
                 <h1 className='font-bold text-[20px] mb-[20px]'>Seat Management</h1>
             <div>

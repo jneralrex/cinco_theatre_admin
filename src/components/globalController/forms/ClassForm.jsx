@@ -7,76 +7,76 @@ import { useSelector } from "react-redux";
 
 const ClassForm = () => {
   const { addClass, setAddClass } = useContext(GlobalController);
-
-  const [error,SetError] = useState(null)
-
   const loggedAdmin = useSelector(
     (state) => state.theatre?.theatre?.theatre?._id
   );
 
-  const [newClass, setNewClass]=useState({
-    className:"",
-    numberOfRows:"",
-    price:"",
-    availability:"",
-    theatre:loggedAdmin
-  })
-  const [newClassError, setNewClassError]=useState({
-    className:"",
-    numberOfRows:"",
-    price:"",
-    availability:"",
-    theatre:loggedAdmin
-  })
+  // Define an initial state constant
+const initialNewClassState = {
+  className: "",
+  numberOfRows: "",
+  price: "",
+  availability: "",
+  theatre: loggedAdmin,
+};
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewClass((prevState) => ({
-        ...prevState,
-        [name]: value
-    }));
-  };
+const [error, setError] = useState(null);
 
-  const formValidate = ()=>{
-      const newError={}
 
-      if(newClass.className ===""){
-        newError.className="class Name is required"
-      }
-      if(newClass.numberOfRows ===""){
-        newError.numberOfRows="Number of row is required"
-      }
-      if(newClass.price ===""){
-        newError.price="price is required"
-      }
-      if(newClass.availability ===""){
-        newError.availability="This is required"
-      }
-      if(newClass.theatre ===""){
-        newError.theatre="This is required"
-      }
-      
+const [newClass, setNewClass] = useState(initialNewClassState);
+const [newClassError, setNewClassError] = useState({});
 
-      setNewClassError(newError);
-      return Object.keys(newError).length === 0;
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setNewClass((prevState) => ({
+    ...prevState,
+    [name]: value,
+  }));
+};
+
+const formValidate = () => {
+  const newError = {};
+
+  if (newClass.className === "") {
+    newError.className = "Class Name is required";
+  }
+  if (newClass.numberOfRows === "") {
+    newError.numberOfRows = "Number of rows is required";
+  }
+  if (newClass.price === "") {
+    newError.price = "Price is required";
+  }
+  if (newClass.availability === "") {
+    newError.availability = "This is required";
+  }
+  if (!newClass.theatre) {
+    newError.theatre = "Theatre is required";
   }
 
-  const handlesubmit = async (e)=>{
-    e.preventDefault()
+  setNewClassError(newError);
+  return Object.keys(newError).length === 0;
+};
 
-    if (formValidate()){
-        try {
-            const resp = await Api.post(`class/classes`,newClass);
-            if(resp.status === 201){
-              window.location.reload()
-            }
-        } catch (error) {
-          SetError(error.message)
-        }
-    }else{
-      SetError("error in validation" , error.message)
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (formValidate()) {
+    try {
+      const resp = await Api.post(`class/classes`, newClass);
+      if (resp.status === 201) {
+        // Reset the form by clearing the state
+        setNewClass(initialNewClassState);
+        setError(null);
+        window.location.reload();
+      }
+    } catch (error) {
+      setError(error.message);
     }
+  } else {
+    setError("Error in validation");
   }
+};
+
 
   return (
     <div className="bg-black/40 fixed inset-0 flex justify-center items-center min-h-screen z-50">
@@ -92,7 +92,7 @@ const ClassForm = () => {
 
         {/* Form */}
         <h2 className="text-xl font-bold text-center mb-4">Add Class</h2>
-        <form onSubmit={handlesubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <select name="className" value={newClass.className} onChange={handleChange} className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
             <option value="">Select</option>
             <option value="vip">VIP</option>
