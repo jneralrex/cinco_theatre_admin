@@ -74,19 +74,25 @@ const RowManagement = () => {
 
       // get all seats for the select field (select)
       const [allseats, setAllSeats] = useState([])
-
-      const getAllSeats = async () => {
+      
+      const getAllSeats = async(id) => {
         try {
-            const resp = await Api.get(`seat`)
+            const resp = await Api.get(`seat/${id}`)
             if (Array.isArray(resp.data.data)) {
               setAllSeats(resp.data.data);
           } else {
               setAllSeats([]); 
           }
         } catch (error) {
-            SetError(error.message)
+            SetError(error.message);
         }
-      };
+      }
+
+      useEffect(() => {
+        if (loggedAdmin) {
+          getAllSeats(loggedAdmin);
+        }
+      }, [loggedAdmin]);
 
       // get all rows
       const [allRow, setAllRow] = useState([])

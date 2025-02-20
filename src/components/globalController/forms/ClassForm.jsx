@@ -67,7 +67,7 @@ const handleSubmit = async (e) => {
         // Reset the form by clearing the state
         setNewClass(initialNewClassState);
         setError(null);
-        window.location.reload() 
+        window.location.reload();
       }
     } catch (error) {
       setError(error.message);

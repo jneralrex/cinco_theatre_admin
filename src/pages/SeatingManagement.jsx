@@ -19,6 +19,8 @@ const SeatingManagement = () => {
     const loggedAdmin = useSelector(
       (state) => state.theatre?.theatre?.theatre?._id
     );
+    console.log("Logged admin theatre id:", loggedAdmin);
+
     // post seat
 
     const initalSeatState ={
@@ -55,11 +57,11 @@ const SeatingManagement = () => {
       // get all seats
 
       const [allseats, setAllSeats] = useState([])
-      console.log(allseats);
       
-      const getAllSeats = async () => {
+      const getAllSeats = async (id) => {
         try {
-            const resp = await Api.get(`seat`)
+            const resp = await Api.get(`seat/${id}`)
+            
             if (Array.isArray(resp.data.data)) {
               setAllSeats(resp.data.data);
           } else {
@@ -70,9 +72,11 @@ const SeatingManagement = () => {
         }
       }
 
-      useEffect(()=>{
-        getAllSeats()
-      },[])
+      useEffect(() => {
+        if (loggedAdmin) {
+          getAllSeats(loggedAdmin);
+        }
+      }, [loggedAdmin]);
 
       // delete seat
       const [deleteSeat, setDeleteSeat] = useState({})
