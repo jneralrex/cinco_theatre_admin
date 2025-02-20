@@ -1,19 +1,42 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GlobalController } from "../Global";
 import { MdCancel } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import Api from "../../../utils/AxiosInstance";
+import { getAllScreen } from "../../../redux/slices/ScreenSlice";
+import DotsLoader from "../../DotLoader";
+import axios from "axios";
 
 const DateForm = () => {
+  const dispatch = useDispatch();
   const { addDate, setAddDate } = useContext(GlobalController);
+  const { loading, screens, error } = useSelector((state) => state.screens);
+
+  const loggedAdmin = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
 
   const [newDate, setNewDate] = useState({
-    Date: "",
-    availability: ""
+    theatre_id: loggedAdmin,
+    movie_id: '',
+    date: '',
+    show_times: [{ time: '', screen_id: '', available_seats: '' }],
   });
 
-  const [newDateError, setNewDateError] = useState({
-    Date: "",
-    availability: ""
-  });
+  const handleNestedChange = (e, field, index) => {
+    const { name, value } = e.target;
+    const updatedField = [...newDate[field]];
+    updatedField[index] = { ...updatedField[index], [name]: value };
+    setNewDate({ ...newDate, [field]: updatedField });
+    // console.log(` Updated ${field} at index ${index}:`, updatedField[index]);
+  };
+
+  const addNestedField = (field) => {
+    setNewDate({
+      ...newDate,
+      [field]: [...newDate[field], { time: '', screen_id: '', available_seats: '' }],
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,40 +46,32 @@ const DateForm = () => {
     }));
   };
 
-  const formValidate = () => {
-    const newError = {};
-
-    if (!newDate.Date) {
-      newError.Date = "Date is required";
-    }
-    if (!newDate.availability) {
-      newError.availability = "Availability is required";
-    }
-
-    setNewDateError(newError);
-    return Object.keys(newError).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e)=>{
     e.preventDefault();
-
-    if (formValidate()) {
-      try {
-        const resp = await Api.post("airingDate/all-dates", newDate);
-        if (resp.status === 201) {
-          alert("Date created successfully");
-          console.log(resp.data.dates);
-        } else if (resp.status === 403) {
-          alert("Date already exists");
-        }
-      } catch (error) {
-        console.log(error.message);
+    const id = localStorage.getItem("movieId");
+    try {
+      const resp = await Api.post(`airingdate/new`, {...newDate, movie_id: id});
+      // const resp = await axios.post('http://localhost:5000/api/v1/airingdate/new', {...newDate, movie_id: id});
+      // console.log(resp);
+      if(resp.status === 201){
+        setNewDate({
+          movie_id: '',
+          date: '',
+          show_times: [{ time: '', screen_id: '', available_seats: '' }],
+        });
+        setAddDate("");
       }
-    } else {
-      console.log("Validation error occurred");
+    } catch (error) {
+      console.log(` Error creating date: ${error}`, error);
     }
   };
+  
+  useEffect(() => {
+    dispatch(getAllScreen(loggedAdmin));
+  }, [dispatch]);
 
+  if(loading) return <DotsLoader />;
+  if(error) return <div><p className="text-center text-red-500">Error with screen id: {error}</p></div>;
   return (
     <div className="bg-black/40 fixed inset-0 flex justify-center items-center min-h-screen z-50">
       <div className="relative bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
@@ -73,30 +88,57 @@ const DateForm = () => {
         <h2 className="text-xl font-bold text-center mb-4">Add Date</h2>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
-            type="text"
-            id="eventDate"
-            name="Date"
-            value={newDate.Date}
+            required
+            type="date"
+            name="date"
+            value={newDate.date}
             onChange={handleChange}
             placeholder="Enter Date"
             className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {newDateError.Date && (
-            <p className="text-red-500 text-sm">{newDateError.Date}</p>
-          )}
 
-          <input
-            type="text"
-            id="availability"
-            name="availability"
-            value={newDate.availability}
-            onChange={handleChange}
-            placeholder="Enter Availability"
-            className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {newDateError.availability && (
-            <p className="text-red-500 text-sm">{newDateError.availability}</p>
-          )}
+          <div className="form-control mb-4">
+            <label htmlFor="" className="text-xs mb-1">Streaming time <span className="text-red-500">*</span></label>
+            {newDate.show_times.map((st, index) => (
+              <div key={index} className="grid lg:grid-cols-3 gap-2 mb-2">
+                <input
+                  type="time"
+                  required
+                  name="time"
+                  value={st.time}
+                  onChange={(e) => handleNestedChange(e, 'show_times', index)}
+                  className="input input-bordered flex-1"
+                />
+                <select
+                  className="input input-bordered flex-1"
+                  name="screen_id"
+                  required
+                  value={st.screen_id}
+                  onChange={(e) => handleNestedChange(e, 'show_times', index)}
+                >
+                  <option value="">Screen</option>
+                  {screens?.map((screen) => (
+                    <option key={screen._id} value={screen._id}>{screen.screenName}</option>
+                  ))}
+                </select>
+
+                <input
+                  name="available_seats"
+                  type="number"
+                  required
+                  value={st.available_seats}
+                  onChange={(e) => handleNestedChange(e, 'show_times', index)}
+                  placeholder="Available seats"
+                  className="input input-bordered flex-1"
+                />
+              </div>
+            ))}
+            <div className="flex justify-end">
+              <button type="button" onClick={() => addNestedField('show_times')} className="text-xs rounded text-purple-800 hover:bg-gray-100 p-1">
+                + Add stream time
+              </button>
+            </div>
+          </div>
 
           <button
             type="submit"
