@@ -15,6 +15,8 @@ const Seatdetail = () => {
     const getSingleSeat =async()=>{
         try {
             const resp = await Api.get(`seat/${id}`)
+            console.log(resp);
+            
             if(resp.status === 200){
                 setSingleSeat(resp.data.data)
             }

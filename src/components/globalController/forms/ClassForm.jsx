@@ -2,11 +2,12 @@ import React, { useContext, useState } from "react";
 import { GlobalController } from "../Global";
 import { MdCancel } from "react-icons/md";
 import Api from "../../../utils/AxiosInstance";
-import axios from "axios";
+import Loader from "../Loader";
 import { useSelector } from "react-redux";
 
 const ClassForm = () => {
   const { addClass, setAddClass } = useContext(GlobalController);
+  const [loader , SetLoader] = useState(false)
   const loggedAdmin = useSelector(
     (state) => state.theatre?.theatre?.theatre?._id
   );
@@ -62,14 +63,16 @@ const handleSubmit = async (e) => {
 
   if (formValidate()) {
     try {
+      SetLoader(true)
       const resp = await Api.post(`class/classes`, newClass);
       if (resp.status === 201) {
-        // Reset the form by clearing the state
         setNewClass(initialNewClassState);
         setError(null);
+        SetLoader(false)
         window.location.reload();
       }
     } catch (error) {
+      SetLoader(false)
       setError(error.message);
     }
   } else {
@@ -91,8 +94,11 @@ const handleSubmit = async (e) => {
         </button>
 
         {/* Form */}
+        
         <h2 className="text-xl font-bold text-center mb-4">Add Class</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {
+          loader ? <Loader /> : 
+        (<form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <select name="className" value={newClass.className} onChange={handleChange} className="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
             <option value="">Select</option>
             <option value="vip">VIP</option>
@@ -132,9 +138,11 @@ const handleSubmit = async (e) => {
           >
             Add Class
           </button>
-        </form>
+        </form>)
+        }
       </div>
     </div>
+        
   );
 };
 
