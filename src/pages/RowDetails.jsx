@@ -3,7 +3,6 @@ import { MdCancel } from "react-icons/md";
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Api from '../utils/AxiosInstance';
-import axios from 'axios';
 
 
 
@@ -12,11 +11,14 @@ const Rowdetail = () => {
     const id = params.id
 
     const [singleRow, setSingleRow] = useState({});
+    console.log("this is the state", singleRow);
+    
     const [error, SetError]= useState(null);
     
     const getSingleRow =async()=>{
         try {
             const resp = await Api.get(`row/rows/${id}`)
+            console.log("This is the response",resp);
             if(resp.status === 200){
                 setSingleRow(resp.data.data)
             }
