@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { GlobalController } from '../components/globalController/Global';
 import DateForm from '../components/globalController/forms/DateForm';
 import Api from '../utils/AxiosInstance';
-import axios from 'axios';
 
 const MovieManagement = () => {
   const { addDate, setAddDate } = useContext(GlobalController);
@@ -25,7 +24,8 @@ const MovieManagement = () => {
 
   const fetchAllMovieByCinema = async () => {
     try {
-      const resp = await Api.get(`movies/theater?theatre_id=${loggedAdminTheater}`);
+      const resp = await Api.get(`movies?cinema_id=${loggedAdminCinema}`);
+      // const resp = await axios.get(`http://localhost:5000/api/v1/movies?cinema_id=${loggedAdminCinema}`)
       // console.log(resp)
       if(resp.status === 200){
         setLoading(false)
@@ -33,7 +33,7 @@ const MovieManagement = () => {
         setCurrentPage(resp.data.currentPage)
       }
     } catch (error) {
-      console.log('Error fetching all movies from database', error)
+      console.log('Error fetching all movies for a cinema', error)
     }
   }
  
@@ -118,7 +118,7 @@ const MovieManagement = () => {
     } else {
         document.body.style.overflow = '';
     }
-};
+  };
 
 
 
@@ -158,10 +158,10 @@ const MovieManagement = () => {
             displayedMovie.map((movie) => (
               <tr key={movie._id} className="hover:bg-gray-100">
                 <td className="p-2 border flex justify-center items-center">
-                  <img src={movie.banner.url} alt={movie.title} className="w-[80px]" />
+                  <img src={movie?.banner?.url} alt={movie?.title} className="w-[80px]" />
                 </td>
-                <td className="p-2 border font-semibold">{movie.title}</td>
-                <td className="p-2 border">{movie.genre}</td>
+                <td className="p-2 border font-semibold">{movie?.title}</td>
+                <td className="p-2 border">{movie?.genre}</td>
                 <td className="p-2 border relative">
                   <div
                     className={`size-3 absolute top-[50%] left-[50%] rounded-full ${

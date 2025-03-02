@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TfiAngleRight } from "react-icons/tfi";
 import { TfiAngleLeft } from "react-icons/tfi";
 import { IoIosArrowDown } from "react-icons/io";
@@ -15,8 +15,12 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import axios from "axios";
 import DotsLoader from "../components/DotLoader";
 import Api from "../utils/AxiosInstance";
+import { useSelector } from "react-redux";
+import { GlobalController } from "../components/globalController/Global";
+import DateForm from "../components/globalController/forms/DateForm";
 
 const MovieDateTime = () => {
+  const { addDate, setAddDate } = useContext(GlobalController);
   const params = useParams();
   const { id } = params;
   const [movie, setMovie] = useState({});
@@ -25,6 +29,10 @@ const MovieDateTime = () => {
   const [ loading, setLoading ] = useState(true);
   const [error, setError] = useState(null)
   const [selectedDateId, setSelectedDateId] = useState(null);
+
+  const loggedAdminTheater = useSelector(
+    (state) => state.theatre?.theatre?.theatre?._id
+  );
 
   // Convert time to 12-hour format with AM/PM
   const formatTime = (time) => {
@@ -37,23 +45,35 @@ const MovieDateTime = () => {
   // Fetch show dates from API
   const getShowDates = async () => {
     try {
-      const resp = await Api.get(`/airingdate/${id}`);
       // const resp = await axios.get(`http://localhost:5000/api/v1/airingdate/${id}`);
+      const resp = await Api.get(`airingdate/${id}`);
       if (resp.status === 200) {
-        const fetchedData = resp.data.data;
+        const filteredDates = resp.data.data
+          .map(date => {
+            // Filter show_times where theatre_id matches loggedAdminTheater
+            const filteredShowTimes = date.show_times.filter(
+              show => show.theatre_id?._id === loggedAdminTheater
+            );
+  
+            return filteredShowTimes.length > 0 ? { ...date, show_times: filteredShowTimes } : null;
+          })
+          .filter(Boolean);
+  
         setMovie(resp.data.movie);
-        setShowDates(fetchedData);
-
+        setShowDates(filteredDates);
+  
         // Automatically select the first available date
-        if (fetchedData.length > 0) {
-          setSelectedDateId(fetchedData[0]._id);
+        if (filteredDates.length > 0) {
+          setSelectedDateId(filteredDates[0]._id);
         }
-
-        await getTheatre(resp.data.movie.theatre_id._id);
+  
+        // if (resp.data.movie?.theatre_id?._id) {
+        //   await getTheatre(resp.data.movie.theatre_id._id);
+        // }
       }
     } catch (error) {
       console.error("Error fetching showDates:", error);
-      setError(error.message)
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -71,15 +91,46 @@ const MovieDateTime = () => {
     }
   };
 
+  const toggleClassModal = () => {
+    setAddDate(!addDate);
+    if (!addDate) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = '';
+    }
+  };
 
-    useEffect(()=>{
-      getShowDates();
-    },[]);
+  useEffect(()=>{
+    getShowDates();
+  },[]);
 
-    if(loading) return <DotsLoader />;
-    if(error) return <div>No showtimes found for this movie</div>;
+  
+  if(loading) return <DotsLoader />;
+  if(error) return (
+    <div className="h-[80vh] flex justify-center items-center">
+      <div className="text-center">
+        <h1>No showtimes found for this movie yet</h1>
+        <p>Check back later for updates</p>
+        <Link to={'/movie-management'} className="text-sm text-blue-500 underline hover:no-underline hover:text-blue-600">Home</Link>
+      </div>
+    </div>
+  );
+  if (showDates.length === 0) return (
+    <div>
+      {/* date form */}
+      {addDate && <DateForm closeDateForm={toggleClassModal} getShowDates={getShowDates} movieId={id} />}
+
+      <div className="h-[100vh] flex justify-center items-center">
+        <div className="text-center">
+          <h1>You haven’t added any showtimes for this movie yet.</h1>
+          <p><span onClick={toggleClassModal} className="text-blue-500 underline cursor-pointer">Add</span> one now to make it available for booking.</p>
+        </div>
+      </div>
+    </div>
+  );
   return (
     <div>
+
       <div className="mt-[50px] lg:w-[80%] md:mt-[80px] w-[90%] mx-auto">
         <div>
           <p className="lg:text-[38px] text-[18px] font-semibold pt-5">
@@ -159,67 +210,80 @@ const MovieDateTime = () => {
               </div>
             </div>
             <div>
-              <div className="lg:flex gap-3 items-start p-[30px] border-t">
-                <div className="flex lg:block gap-2">
-                  <div>
-                    <IoMdHeartEmpty className="lg:text-lg text-black/40" />
-                  </div>
-                  <div className="lg:hidden flex w-full justify-between lg:gap-[50px] items-center">
-                    <p className="text-sm font-semibold mb-4">
-                      {theatreLocation?.theatreName}, {theatreLocation?.theatreLocation?.location[0].cities[0].street} {theatreLocation?.theatreLocation?.location[0].cities[0].city}, {theatreLocation?.theatreLocation?.location[0].state}
-                    </p>
-                    <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
-                      <MdInfoOutline />
-                      <p className="text-[12px]">INFO</p>
+              {
+                selectedDateId &&
+                showDates?.find((date)=> date._id === selectedDateId)
+                ?.show_times?.map((ttimes)=>{
+                  return(
+                  <div key={ttimes._id} className="lg:flex gap-3 items-start p-[30px] border-t">
+                    <div>
+                      {/* theatre name */}
+                      <div className="flex lg:block gap-2">
+                        <div>
+                          <IoMdHeartEmpty className="lg:text-lg text-black/40" />
+                        </div>
+                        <div className="lg:hidden flex w-full justify-between lg:gap-[50px] items-center">
+                          <p className="text-sm font-semibold mb-4">
+                            {ttimes.theatre_id.theatreName}
+                            {/* {theatreLocation?.theatreName}, {theatreLocation?.theatreLocation?.location[0].cities[0].street} {theatreLocation?.theatreLocation?.location[0].cities[0].city}, {theatreLocation?.theatreLocation?.location[0].state} */}
+                          </p>
+                          <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
+                            <MdInfoOutline />
+                            <p className="text-[12px]">INFO</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="hidden lg:flex gap-[50px] items-center">
+                          <p className="text-sm font-semibold mb-4">
+                          {ttimes.theatre_id.theatreName}
+                          {/* {theatreLocation?.theatreName}, {theatreLocation?.theatreLocation?.location[0].cities[0].street}{" "}
+                          {theatreLocation?.theatreLocation?.location[0].cities[0].city}, {theatreLocation?.theatreLocation?.location[0].state} */}
+                          </p>
+                          <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
+                            <MdInfoOutline />
+                            <p className="text-[12px]">INFO</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-6 mb-3">
+                          <div className="flex gap-1 text-green-500">
+                            <TfiTicket size={17} />
+                            <p className="text-xs">M-Ticket</p>
+                          </div>
+                          <div className="flex gap-1 text-orange-400">
+                            <IoFastFoodOutline size={17} />
+                            <p className="text-xs">Food & Beverage</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div>
-                  <div className="hidden lg:flex gap-[50px] items-center">
-                    <p className="text-sm font-semibold mb-4">
-                    {theatreLocation?.theatreName}, {theatreLocation?.theatreLocation?.location[0].cities[0].street}{" "}
-                    {theatreLocation?.theatreLocation?.location[0].cities[0].city}, {theatreLocation?.theatreLocation?.location[0].state}
-                    </p>
-                    <div className="flex gap-1 items-center text-gray-400 mt-[-14px]">
-                      <MdInfoOutline />
-                      <p className="text-[12px]">INFO</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-6 mb-3">
-                    <div className="flex gap-1 text-green-500">
-                      <TfiTicket size={17} />
-                      <p className="text-xs">M-Ticket</p>
-                    </div>
-                    <div className="flex gap-1 text-orange-400">
-                      <IoFastFoodOutline size={17} />
-                      <p className="text-xs">Food & Beverage</p>
-                    </div>
-                  </div>
-                </div>
-                {/* Showtimes */}
-                <div>
-                    <div className="flex gap-4 mt-2">
+                    {/* Showtimes */}
+                    <div>
+                      <div className="flex gap-4 mt-2">
                         {
-                            selectedDateId &&
-                            showDates.find((date)=> date._id === selectedDateId)
-                            ?.show_times.map(({ _id, time, screen_id, available_seats })=>(
-                                <Link key={_id} to="/seat-page">
-                                    <div className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
-                                        <p className="text-green-400">{formatTime(time)}</p>
-                                        <p className="text-gray-400">{screen_id ? `${screen_id.screenName} ${screen_id.screenType}` : "Unknown Screen"}</p>
-                                    </div>
-                                </Link>
-                            ))
+                          ttimes?.times?.map(({ _id, time, screen_id, price })=>(
+                            <Link key={_id} to="/seat-page" className="dropdown dropdown-hover dropdown-top dropdown-end">
+                              <div tabIndex={0} role="button" className="border border-gray-400 rounded text-[11px] lg:py-1 py-0 lg:px-5 px-3">
+                                <p className="text-green-400">{formatTime(time)}</p>
+                                <p className="text-gray-400">{screen_id ? `${screen_id.screenName} ${screen_id.screenType}` : "Unknown Screen"}</p>
+                              </div>
+                              <ul tabIndex={0} className="dropdown-content menu text-white shadow-purple-800/50 z-[1] w-[7rem] rounded bg-purple-600 shadow">
+                                <li className="font-semibold text-clip p-1 text-sm">${price}.00</li>
+                              </ul>
+                            </Link>
+                          ))
                         }
-                    </div>
-                    <div className="flex gap-3 items-center mt-3">
-                        <GoDotFill color="yellow" />
-                        <p className="text-gray-500 text-[13px]">
+                      </div>
+                      <div className="flex gap-3 items-center mt-3">
+                          <GoDotFill color="yellow" />
+                          <p className="text-gray-500 text-[13px]">
                             Non-cancellable{" "}
-                        </p>
+                          </p>
+                      </div>
                     </div>
-                </div>
-              </div>
+                  </div>
+                )})
+              }
             </div>
           </div>
           <div className="mt-[30px]">
