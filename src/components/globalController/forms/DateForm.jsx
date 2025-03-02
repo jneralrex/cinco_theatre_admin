@@ -7,7 +7,7 @@ import { getAllScreen } from "../../../redux/slices/ScreenSlice";
 import DotsLoader from "../../DotLoader";
 import axios from "axios";
 
-const DateForm = () => {
+const DateForm = ({getShowDates, movieId}) => {
   const dispatch = useDispatch();
   const { addDate, setAddDate } = useContext(GlobalController);
   const { loading, screens, error } = useSelector((state) => state.screens);
@@ -20,7 +20,7 @@ const DateForm = () => {
     theatre_id: loggedAdmin,
     movie_id: '',
     date: '',
-    show_times: [{ time: '', screen_id: '', available_seats: '' }],
+    times: [{ time: '', screen_id: '', price: '' }],
   });
 
   const handleNestedChange = (e, field, index) => {
@@ -34,7 +34,7 @@ const DateForm = () => {
   const addNestedField = (field) => {
     setNewDate({
       ...newDate,
-      [field]: [...newDate[field], { time: '', screen_id: '', available_seats: '' }],
+      [field]: [...newDate[field], { time: '', screen_id: '', price: '' }],
     });
   };
 
@@ -48,7 +48,7 @@ const DateForm = () => {
 
   const handleSubmit = async (e)=>{
     e.preventDefault();
-    const id = localStorage.getItem("movieId");
+    const id = movieId ? movieId : localStorage.getItem("movieId");
     try {
       const resp = await Api.post(`airingdate/new`, {...newDate, movie_id: id});
       // const resp = await axios.post('http://localhost:5000/api/v1/airingdate/new', {...newDate, movie_id: id});
@@ -57,9 +57,11 @@ const DateForm = () => {
         setNewDate({
           movie_id: '',
           date: '',
-          show_times: [{ time: '', screen_id: '', available_seats: '' }],
+          times: [{ time: '', screen_id: '', price: '' }],
         });
         setAddDate("");
+        alert("Date Added Successfully");
+        getShowDates ? getShowDates() : null;
       }
     } catch (error) {
       console.log(` Error creating date: ${error}`, error);
@@ -99,14 +101,14 @@ const DateForm = () => {
 
           <div className="form-control mb-4">
             <label htmlFor="" className="text-xs mb-1">Streaming time <span className="text-red-500">*</span></label>
-            {newDate.show_times.map((st, index) => (
+            {newDate.times.map((st, index) => (
               <div key={index} className="grid lg:grid-cols-3 gap-2 mb-2">
                 <input
                   type="time"
                   required
                   name="time"
                   value={st.time}
-                  onChange={(e) => handleNestedChange(e, 'show_times', index)}
+                  onChange={(e) => handleNestedChange(e, 'times', index)}
                   className="input input-bordered flex-1"
                 />
                 <select
@@ -114,7 +116,7 @@ const DateForm = () => {
                   name="screen_id"
                   required
                   value={st.screen_id}
-                  onChange={(e) => handleNestedChange(e, 'show_times', index)}
+                  onChange={(e) => handleNestedChange(e, 'times', index)}
                 >
                   <option value="">Screen</option>
                   {screens?.map((screen) => (
@@ -123,18 +125,18 @@ const DateForm = () => {
                 </select>
 
                 <input
-                  name="available_seats"
+                  name="price"
                   type="number"
                   required
-                  value={st.available_seats}
-                  onChange={(e) => handleNestedChange(e, 'show_times', index)}
-                  placeholder="Available seats"
+                  value={st.price}
+                  onChange={(e) => handleNestedChange(e, 'times', index)}
+                  placeholder="Price in $"
                   className="input input-bordered flex-1"
                 />
               </div>
             ))}
             <div className="flex justify-end">
-              <button type="button" onClick={() => addNestedField('show_times')} className="text-xs rounded text-purple-800 hover:bg-gray-100 p-1">
+              <button type="button" onClick={() => addNestedField('times')} className="text-xs rounded text-purple-800 hover:bg-gray-100 p-1">
                 + Add stream time
               </button>
             </div>
