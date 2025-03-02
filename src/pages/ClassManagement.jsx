@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import AddEvent from "../components/globalController/triggers/AddEvent";
 import AddClass from '../components/globalController/triggers/AddClass';
-import axios from 'axios';
 import { GlobalController } from '../components/globalController/Global';
 import { Link } from 'react-router-dom';
 import Api from '../utils/AxiosInstance';
+import { useSelector } from 'react-redux';
+
 const mockUsers = Array.from({ length: 50 }, (_, index) => ({
   id: index + 1,
   name: `User ${index + 1}`,
@@ -13,8 +14,9 @@ const mockUsers = Array.from({ length: 50 }, (_, index) => ({
 }));
 
 const ClassManagement = () => {
-      const { newClass} = useContext(GlobalController);
-    
+    const { newClass} = useContext(GlobalController);
+    const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
+
     const [error, SetError] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     
@@ -38,9 +40,11 @@ const ClassManagement = () => {
     //get all classes
     const [allClasses, setAllClasses] = useState ([])
     
-    const getClass= async ()=>{
+    const getClass= async (id)=>{
       try {
-         const resp = await Api.get(`class/classes`);
+        const resp = await Api.get(`class/classes/${id}`);
+        console.log(resp);
+        
         if(resp.status === 200){
             setAllClasses(resp.data)
           }
@@ -49,8 +53,10 @@ const ClassManagement = () => {
         }
       }
       useEffect (()=>{
-      getClass()
-    },[])
+        if(loggedAdmin){
+          getClass(loggedAdmin)
+        }
+    },[loggedAdmin])
 
           //delete class
           const [classToDelete, setClassToDelete] = useState()

@@ -1,13 +1,14 @@
-import axios, { all } from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import Api from '../utils/AxiosInstance';
 import { useSelector } from 'react-redux';
+import Loader from '../components/globalController/Loader';
 
 const SeatingManagement = () => {
     // handle modal
     const [openModal, setOpenModal] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState (false)
+    const [loading, SetLoading] =useState(false)
 
     // handle error
     const [error, SetError]= useState(null);
@@ -19,8 +20,6 @@ const SeatingManagement = () => {
     const loggedAdmin = useSelector(
       (state) => state.theatre?.theatre?.theatre?._id
     );
-    console.log("Logged admin theatre id:", loggedAdmin);
-
     // post seat
 
     const initalSeatState ={
@@ -44,12 +43,15 @@ const SeatingManagement = () => {
       const handleSubmit =async(e)=>{
         e.preventDefault();
         try {
+            SetLoading(true)
             const resp = await Api.post(`seat`,seat)
             if(resp.status===201){
                 getAllSeats();
                 setSeat(initalSeatState)
+                SetLoading(false)
             }
         } catch (error) {
+          SetLoading(false)
           SetError(error.response.data.message);
         }
       }
@@ -214,20 +216,20 @@ const SeatingManagement = () => {
             </div>
             <div className='flex justify-between mb-8'>
                 <button
-                
                 type='submit'
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
                 >
                 Submit
                 </button>
                 <button
+                type='button'
                 onClick={handleOpenModal}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
                 >
                 All seats
                 </button>
             </div>
-            {   openModal && (
+            { loading ? <Loader/> :  openModal && (
                     <table className="w-[90%] m-auto text-center border border-gray-300 shadow-sm ">
                     <thead className="bg-gray-200">
                       <tr>
