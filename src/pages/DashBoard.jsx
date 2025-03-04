@@ -4,6 +4,9 @@ import { getAllScreen } from "../redux/slices/ScreenSlice";
 
 const DashBoard = () => {
   const dispatch = useDispatch();
+   const loggedAdmin = useSelector(
+      (state) => state.theatre?.theatre?.theatre?._id
+    );
 
   // Users state
 
@@ -12,7 +15,7 @@ const DashBoard = () => {
 
   // Fetch the users and locations data when the component mounts
   useEffect(() => {
-    dispatch(getAllScreen());
+    dispatch(getAllScreen(loggedAdmin));
   }, [dispatch]);
 
   return (

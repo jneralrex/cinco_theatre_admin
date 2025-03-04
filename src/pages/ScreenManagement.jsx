@@ -23,6 +23,7 @@ const ScreenManagement = () => {
 
   useEffect(() => {
     dispatch(getAllScreen(loggedAdmin));
+    console.log(loggedAdmin)
   }, [dispatch]);
 
   const handleEditScreen = (screen) => {
