@@ -10,7 +10,6 @@ import Nav from "./components/Nav";
 import DashBoard from "./pages/DashBoard";
 import EventManagement from "./pages/EventManagement";
 import MovieManagement from "./pages/MovieManagement";
-import TheatreManagement from "./pages/TheatreManagement";
 import Global from "./components/globalController/Global";
 import Tickets from "./pages/Tickets";
 import GeneralSettings from "./pages/GeneralSettings";
@@ -52,7 +51,6 @@ const router = createBrowserRouter(
         <Route path="/movie-date-time/:id" element={<MovieDateTime />} />
         <Route path="/movie-management" element={<MovieManagement />} />
         <Route path="/seat-blocking" element={<SeatBlockingManagement />} />
-        <Route path="/theatre-management" element={<TheatreManagement />} />
         <Route path="/tickets" element={<Tickets />} />
         <Route path="/report" element={<Report />} />
         <Route path="/screen-ctrl" element={<ScreenManagement />} />

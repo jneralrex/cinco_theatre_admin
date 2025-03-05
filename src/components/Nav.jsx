@@ -38,19 +38,27 @@ const Nav = () => {
   };
 
   const navItems = [
-    { icon: <MdHome />, label: "Overview", path: "/dashboard" },
-    { icon: <MdEvent />, label: "Event management", path: "/event-management" },
-    { icon: <BiCameraMovie />, label: "Movie management", path: "/movie-management" },
-    { icon: <MdFlightClass />, label: "Class management", path: "/class" },
-    { icon: [<MdEventSeat key="event"/>, <MdBlock className="text-red-500" key="block"/>, ], label: "Seat blocking/unblocking", path: "/seat-blocking" },
-    { icon: [<MdEventSeat key="event"/>, <RxRows className="text-black" key="row"/>, ], label: "Seat management", path: "/seat-management" },
-    { icon: [<MdEventSeat />, ], label: "Row management", path: "/row-management" },
-    { icon: <MdFitScreen />, label: "Screen Management", path: "/screen-ctrl" },
-    { icon: [<FaMasksTheater key="theatre"/>, <CiSettings key="settings"/>], label: "Theatre management", path: "/theatre-management" },
-    { icon: <BsTicket />, label: "Tickets", path: "/tickets" },
-    { icon: <FaPen />, label: "Report", path: "/report" },
-    { icon: <CiSettings />, label: "General Settings", path: "/settings" },
+    { icon: <MdHome key="home" />, label: "Overview", path: "/dashboard" },
+    { icon: <MdEvent key="event" />, label: "Event management", path: "/event-management" },
+    { icon: <BiCameraMovie key="movie" />, label: "Movie management", path: "/movie-management" },
+    { icon: <MdFlightClass key="class" />, label: "Class management", path: "/class" },
+    { 
+      icon: [<MdEventSeat key="event-seat" />, <MdBlock className="text-red-500" key="block" />], 
+      label: "Seat blocking/unblocking", 
+      path: "/seat-blocking" 
+    },
+    { 
+      icon: [<MdEventSeat key="event-seat" />, <RxRows className="text-black" key="rows" />], 
+      label: "Seat management", 
+      path: "/seat-management" 
+    },
+    { icon: <MdEventSeat key="row-management" />, label: "Row management", path: "/row-management" },
+    { icon: <MdFitScreen key="screen" />, label: "Screen Management", path: "/screen-ctrl" },
+    { icon: <BsTicket key="ticket" />, label: "Tickets", path: "/tickets" },
+    { icon: <FaPen key="report" />, label: "Report", path: "/report" },
+    { icon: <CiSettings key="general-settings" />, label: "General Settings", path: "/settings" },
   ];
+  
 
   return (
     <div>

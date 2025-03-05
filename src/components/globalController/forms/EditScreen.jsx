@@ -49,7 +49,7 @@ const EditScreen = ({ isOpen, onClose, screen }) => {
             screenType: "",
           });
         onClose();
-        dispatch(getAllScreen())
+        dispatch(getAllScreen(loggedAdmin))
       })
       .catch((err) => {
         console.error("Error editing screen:", err);

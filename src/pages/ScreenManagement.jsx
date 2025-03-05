@@ -20,10 +20,10 @@ const ScreenManagement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewScreenDetails, setViewScreenDetails] = useState(null);
+  const [apiResponse, setApiResponse] = useState(null);
 
   useEffect(() => {
     dispatch(getAllScreen(loggedAdmin));
-    console.log(loggedAdmin)
   }, [dispatch]);
 
   const handleEditScreen = (screen) => {
@@ -49,7 +49,7 @@ const ScreenManagement = () => {
           dispatch(getAllScreen(loggedAdmin));
         })
         .catch((error) => {
-          console.error(error);
+          setApiResponse(error);
         });
     }
   };
@@ -62,7 +62,7 @@ const ScreenManagement = () => {
         setIsViewModalOpen(true);
       })
       .catch((err) => {
-        console.error("Error viewing user:", err);
+        setApiResponse("Error viewing user:", err);
       });
   };
 

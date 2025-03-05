@@ -8,6 +8,7 @@ const EditEvent = ({ isOpen, onClose, event }) => {
     const { loading, error } = useSelector((state) => state.events);
   
     const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
+      const [apiResponse, setApiResponse] = useState(null);
     
 
     const dispatch = useDispatch();
@@ -77,10 +78,10 @@ const EditEvent = ({ isOpen, onClose, event }) => {
                     location: '',
                 });
                 onClose();
-                dispatch(getEvents())
+                dispatch(getEvents(loggedAdmin))
             })
             .catch((err) => {
-                console.error(err);
+                setApiResponse(err);
             });
     };
 

@@ -15,8 +15,8 @@ const EventManagement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [viewEventDetails, setViewEventDetails] = useState(null);
+  const [apiResponse, setApiResponse] = useState(null);
 
-  console.log(loggedAdmin)
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -58,7 +58,7 @@ const EventManagement = () => {
         setIsViewModalOpen(true);
       })
       .catch((err) => {
-        console.error("Error viewing user:", err);
+        setApiResponse("Error viewing user:", err);
       });
   };
 
@@ -86,12 +86,11 @@ const EventManagement = () => {
         const encryptedId = encryptId(eventId);
         dispatch(deleteEvent({ eventId: encryptedId }))
           .then(() => {
-            dispatch(getEvents());
+            dispatch(getEvents(loggedAdmin));
             showSnackbar("Event deleted successfully!", "success");
           })
           .catch((error) => {
-            console.error(error);
-            showSnackbar("Failed to delete event.", "error");
+            showSnackbar("Failed to delete event.", error);
           });
       },
       () => {
@@ -151,6 +150,7 @@ const EventManagement = () => {
                 <th className="p-2 border"></th>
               </tr>
             </thead>
+            <tbody>
             {events.map((event) => (
               <tr
                 key={event._id}
@@ -180,6 +180,7 @@ const EventManagement = () => {
                 </td>
               </tr>
             ))}
+            </tbody>
           </table>
         </>
       ) : (

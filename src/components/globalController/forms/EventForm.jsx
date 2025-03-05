@@ -9,8 +9,7 @@ const EventForm = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.events);
   const  loggedAdmin = useSelector((state) => state.theatre?.theatre?.theatre?._id);
-
-  
+  const [apiResponse, setApiResponse] = useState(null);
 
   const [formData, setFormData] = useState({
     eventName: "",
@@ -21,12 +20,6 @@ const EventForm = () => {
     eventTime: "",
     currency: "",
   });
-
-useEffect(() => {
-  if (addEvent) {
-    dispatch(getAllLocation());
-  }
-}, [dispatch, addEvent]);
 
   const handleInput = (e) => {
     const { name, value, files } = e.target;
@@ -56,14 +49,13 @@ useEffect(() => {
           currency: "",
         });
         setAddEvent("")
-         dispatch(getEvents())
+         dispatch(getEvents(loggedAdmin))
       })
       .catch((err) => {
-        console.error(err);
+        setApiResponse(err);
       })
   };
 
-  console.log(formData)
 
   return (
     <div className="bg-black/40 top-0 left-0 right-0 fixed flex justify-center items-center min-h-screen z-50">
