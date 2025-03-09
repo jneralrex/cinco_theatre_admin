@@ -296,7 +296,9 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
             <div className="form-control mb-4">
               <label htmlFor="" className="text-xs mb-1">Cast <span className="text-red-500">*</span></label>
               {formData.cast.map((cast, index) => (
-                <div key={index} className="grid lg:grid-cols-3 gap-3 mb-2">
+                <div key={index} className="grid lg:flex lg:flex-col gap-3 mb-3">
+                  <label htmlFor="">
+                  <span className="text-red-500">*</span>
                   <input
                     type="text"
                     name="name"
@@ -305,6 +307,11 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
                     placeholder="Name"
                     className="input input-bordered flex-1"
                   />
+                  </label>
+                  <label htmlFor="">
+
+                  <span className="text-red-500">*</span>
+
                   <input
                     type="url"
                     name="image"
@@ -313,6 +320,9 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
                     placeholder="Image URL"
                     className="input input-bordered flex-1"
                   />
+                  </label>
+                  <label htmlFor="">
+                  <span className="text-red-500">*</span>
                   <input
                     type="text"
                     name="stage_name"
@@ -321,6 +331,7 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
                     placeholder="Stage Name"
                     className="input input-bordered flex-1"
                   />
+                  </label>
                 </div>
               ))}
               <div className="flex justify-end">
@@ -332,9 +343,11 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
 
             {/* Crew */}
             <div className="form-control mb-4">
-              <label htmlFor="" className="text-xs mb-1">Crew <span className="text-red-500">*</span></label>
+              <label htmlFor="" className="text-xs mb-1">Crew </label>
               {formData.crew.map((crew, index) => (
-                <div key={index} className="grid lg:grid-cols-3 gap-3">
+                <div key={index} className="grid lg:flex lg:flex-col gap-3 mb-3">
+                  <label htmlFor="" className="text-xs mb-1"><span className="text-red-500">*</span>
+
                   <input
                     type="text"
                     name="name"
@@ -343,6 +356,8 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
                     placeholder="Name"
                     className="input input-bordered flex-1"
                   />
+                  </label>
+                  <label>  <span className="text-red-500">*</span>
                   <input
                     type="url"
                     name="image"
@@ -351,6 +366,9 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
                     placeholder="Image URL"
                     className="input input-bordered flex-1"
                   />
+                  </label>
+                  <label><span className="text-red-500">*</span>
+
                   <input
                     type="text"
                     name="stage_name"
@@ -359,6 +377,8 @@ const MoviesForm = ({fetchAllMovieByCinema, closeMovieForm}) => {
                     placeholder="Stage Name"
                     className="input input-bordered flex-1"
                   />
+                 </label>
+
                 </div>
               ))}
               <div className="flex justify-end">
